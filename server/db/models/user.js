@@ -24,7 +24,7 @@ const User = db.define('user', {
   },
   forcePasswordReset: {
     type: Sequelize.BOOLEAN,
-    defaultValue,
+    defaultValue:false
   }
 })
 
