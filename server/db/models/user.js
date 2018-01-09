@@ -16,6 +16,15 @@ const User = db.define('user', {
   },
   googleId: {
     type: Sequelize.STRING
+  },
+  name: Sequelize.STRING,
+  isAdmin: {
+    type: Sequelize.BOOLEAN,
+    defaultValue:false
+  },
+  forcePasswordReset: {
+    type: Sequelize.BOOLEAN,
+    defaultValue:false
   }
 })
 
