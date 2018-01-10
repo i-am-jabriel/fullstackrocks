@@ -16,11 +16,10 @@ const Purchase = require('./purchases')
  * for example, we can say: const {User} = require('../db/models')
  * instead of: const User = require('../db/models/user')
  */
-Purchase.belongsToMany(Order, { through: 'order_purchase' })
 Purchase.belongsTo(Product)
-Order.belongsToMany(Purchase, { through: 'order_purchase' })
+Purchase.belongsTo(Order)
 Order.belongsTo(User)
-User.belongsToMany(Order, { through: 'user_order' })
+
 
 
 
