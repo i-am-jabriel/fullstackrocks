@@ -45,7 +45,7 @@ router.get('/users/:userId', (req, res, next) => {
     res.json(req.orders);
 })
 
-router.get('/', (req, res, next) => {
+router.get('/:orderId', (req, res, next) => {
     res.json(req.singleOrder)
 })
 
