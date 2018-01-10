@@ -2,7 +2,7 @@ const crypto = require('crypto')
 const Sequelize = require('sequelize')
 const db = require('../db')
 
-const User = db.define('user', {
+const User = db.define('users', {
   email: {
     type: Sequelize.STRING,
     unique: true,
@@ -20,11 +20,33 @@ const User = db.define('user', {
   name: Sequelize.STRING,
   isAdmin: {
     type: Sequelize.BOOLEAN,
-    defaultValue:false
+    defaultValue: false
   },
   forcePasswordReset: {
     type: Sequelize.BOOLEAN,
-    defaultValue:false
+    defaultValue: false
+  },
+  street: {
+    type: Sequelize.STRING,
+    allowNull: false
+  },
+  city: {
+    type: Sequelize.STRING,
+    allowNull: false
+  },
+  zip: {
+    type: Sequelize.STRING,
+    allowNull: false,
+    validate: {
+      len: [5, 5]
+    }
+  },
+  phone: {
+    type: Sequelize.STRING,
+    allowNull: false,
+    validate: {
+      len: [12, 12]
+    }
   }
 })
 
