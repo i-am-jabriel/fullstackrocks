@@ -2,6 +2,7 @@ const router = require('express').Router()
 const {User} = require('../db/models')
 module.exports = router
 
+//If we going to look for a specific product from params preload that and have it available to the request
 router.param('userId', (req, res, next, userId) => {
   User.findById(userId,
     {
