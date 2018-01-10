@@ -9,7 +9,7 @@ const Purchase = db.define('purchases', {
         type: Sequelize.DECIMAL,
         allowNull: false
     },
-    quanity: {
+    quantity: {
         type: Sequelize.INTEGER,
         allowNull: false
     }
