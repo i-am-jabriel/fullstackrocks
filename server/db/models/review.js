@@ -18,4 +18,6 @@ const Review = db.define('reviews',{
             max:5
         }
     }
-})
+});
+
+module.exports = Review;

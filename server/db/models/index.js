@@ -21,7 +21,7 @@ Purchase.belongsTo(Product)
 Purchase.belongsTo(Order)
 Order.belongsTo(User)
 Review.belongsTo(User)
-Review.belongsTo(Project)
+Review.belongsTo(Product)
 
 
 
