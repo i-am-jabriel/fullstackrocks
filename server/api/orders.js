@@ -1,9 +1,12 @@
 const router = require('express').Router()
-const {Order} = require('../db/models/order')
+const Order = require('../db/models/order')
+const Purchase = require('../db/models/purchases')
 
 router.get('/users/:userId', (req, res, next) => {
-    console.log("this is running: ", req.params)
-
+    Order.findAll({
+        include:[Purchase]
+    })
+    .then(foundOrders => res.json(foundOrders))
 })
 
 
