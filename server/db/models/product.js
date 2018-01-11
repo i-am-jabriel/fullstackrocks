@@ -34,4 +34,4 @@ const Product = db.define('products', {
 
 
 
-module.exports = Product;
+module.exports = Product

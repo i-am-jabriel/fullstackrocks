@@ -11,7 +11,7 @@ const sessionStore = new SequelizeStore({ db })
 const PORT = process.env.PORT || 8080
 const app = express()
 const socketio = require('socket.io')
-module.exports = app
+
 
 /**
  * In your development environment, you can keep all of your
@@ -105,3 +105,5 @@ if (require.main === module) {
 } else {
   createApp()
 }
+
+module.exports = app

@@ -8,4 +8,4 @@ const Category = db.define('categories', {
     }
 });
 
-module.exports = Category;
+module.exports = Category
