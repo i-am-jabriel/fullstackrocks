@@ -8,4 +8,4 @@ const Order = db.define('orders', {
 
 
 
-module.exports = Order;
+module.exports = Order
