@@ -1,5 +1,5 @@
 const router = require('express').Router()
-const { User } = require('../db/models')
+const { User, Order, Purchase } = require('../db/models')
 
 //If we going to look for a specific product from params preload that and have it available to the request
 router.param('userId', (req, res, next, userId) => {
@@ -37,24 +37,35 @@ router.post('/', (req, res, next) => {
     .then(user => res.json(user))
     .catch(next)
 })
-
+//REDUDANCY?
 //Get a specific user by id
 router.get('/:userId', (req, res) => {
   res.json(req.user)
 })
-
+//TODO: AUTH
 //Update a user by id
 router.put('/:userId', (req, res, next) => {
   req.user.update(req.body, { returning: true })
     .then(user => res.json(user))
     .catch(next)
 })
-
+//TODO: AUTH
 //delete a user by id
 router.delete('/:userId', (req, res, next) => {
   req.user.destroy()
     .then(rows => res.send(rows))
     .catch(next)
 })
+
+//Get all orders for a user
+//TODO: AUTH
+router.get('/:uid/orders', (req, res, next) => {
+  Order.findAll({
+    where: { userId: req.params.uid},
+    include: {all: true}
+  })
+    .then(orders => res.json(orders))
+    .catch(next)
+});
 
 module.exports = router
