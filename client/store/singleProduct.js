@@ -3,18 +3,22 @@ import axios from 'axios'
 const GOT_SINGLE_PRODUCT = 'GOT_SINGLE_PRODUCT'
 
 export const gotSingleProduct = (singleProduct) => {
-    console.log("you are inside gotSingleProduct")
     return {type: GOT_SINGLE_PRODUCT, singleProduct}
 }
 
 export const fetchSingleProduct = (productId) => {
-    console.log("you are inside fetchSingleProd")
     return function(dispatch) {
         axios.get(`/api/products/${productId}`)
         .then(res => res.data)
         .then(foundSingleProduct => dispatch(gotSingleProduct(foundSingleProduct)))
     }
 }
+
+// export const fetchProductReviews = (productId) => {
+//     return function(dispatch) {
+//         axios.get(``)
+//     }
+// }
 
 const initialState = {
     singleProduct: {}
