@@ -1,6 +1,7 @@
 import React from 'react';
 import { Card, CardActions, CardHeader, CardMedia, CardTitle, CardText } from 'material-ui/Card';
 import FlatButton from 'material-ui/FlatButton';
+import { NavLink } from 'react-router-dom'
 
 const cardStyle = {
     width: '30vw',
@@ -16,7 +17,7 @@ const ProductPreview = (props) => (
     <Card style={cardStyle}>
 
         <CardTitle title={props.product.title} />
-        <img className='prodPreviewImg' src={props.product.imageUrl} alt="" />
+        <NavLink to={`/products/${props.product.id}`}><img className='prodPreviewImg' src={props.product.imageUrl} alt="" /></NavLink>
         <CardText>
             {props.product.description}
         </CardText>

@@ -11,6 +11,7 @@ import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 import NavigationClose from 'material-ui/svg-icons/navigation/close';
 import { fetchAllCategories } from '../store/categories'
 import CategoryDropDown from './Categories'
+import { NavLink } from 'react-router-dom'
 
 
 /**
@@ -71,11 +72,14 @@ class NavBar extends Component {
         return (
             <div>
                 <AppBar
-                    title="FSAROCKS"
-                    iconElementLeft={<CategoryDropDown categories={this.props.categories} />}
-                    iconElementRight={this.state.logged ? <Logged /> : <Login />}
-
-                />
+                    showMenuIconButton={false}
+                >
+                    <NavLink to={`/`}><h1>FSAROCKS</h1></NavLink>
+                    <CategoryDropDown categories={this.props.categories} />
+                    {
+                        this.state.logged ? <Logged /> : <Login />
+                    }
+                </AppBar>
             </div>
         );
     }
