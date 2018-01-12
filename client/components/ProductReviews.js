@@ -1,30 +1,68 @@
-import React from 'react';
+// // import React, { Component } from 'react';
 
-export default function ProductReviews (props) {
+// // class ProductReviews extends Component {
 
-  const reviews = props.reviews;
 
-  return (
-    <ul>
-      {
-        reviews.map((review) => (
-          <li key={review.id}>
-            <div>
-              <a href="#">
-                <h4 className="media-object">{review.user.name}</h4>
-              </a>
-              <a href="#">
-                <span className="media-object">{review.title}</span>
-              </a>
-            </div>
+// //   // console.log("this is running reviews.id: ", reviews.id)
 
-            <div>
-                <h4>{review.description}</h4>
-            </div>
+// //   render() {
+// //     return (
+// //       <ul>
+// //         {/* {console.log("this is inside return: ", this.props.reviews())} */}
+// //         {
+// //           this.props.reviews.map((review) => (
+// //             <li key={review.id}>
+// //               <div>
+// //                 <a href="#">
+// //                   <h4 className="media-object">{review.user.name}</h4>
+// //                 </a>
+// //                 <a href="#">
+// //                   <span className="media-object">{review.title}</span>
+// //                 </a>
+// //               </div>
 
-          </li>
-        ))
-      }
-    </ul>
-  )
-}
+// //               <div>
+// //                   <h4>{review.description}</h4>
+// //               </div>
+
+// //             </li>
+// //           ))
+// //         }
+// //       </ul>
+// //     )
+// //   }
+// // }
+
+
+// import React from 'react';
+
+// export default function ProductReviews (props) {
+
+//   const reviews = props.reviews;
+// // console.log(reviews);
+
+//   return (
+//     <ul>
+//       {
+//         reviews && reviews.map((review) => (
+//           <li key={review.id}>
+//             <div>
+//               <a href="#">
+//                 <h4 className="media-object">{review.user.name}</h4>
+//               </a>
+//               <a href="#">
+//                 <span className="media-object">{review.title}</span>
+//               </a>
+//             </div>
+
+//             <div>
+//                 <h4>{review.description}</h4>
+//             </div>
+
+//           </li>
+//         ))
+//       }
+//     </ul>
+//   )
+
+// }
