@@ -19,3 +19,18 @@ form div {
   margin: 1em;
   display: inline-block;
 }
+
+
+.prodPreviewImg{
+  height: 40%;
+  width: 60%;
+}
+
+.bannerImage{
+  margin: 15px;
+  height: 30vw;
+}
+
+.homePageContainer{
+  text-align: center;
+}
