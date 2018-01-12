@@ -1,8 +1,6 @@
 const Sequelize = require('sequelize')
 const db = require('../db')
 
-
-
 const Product = db.define('products', {
     title: {
         type: Sequelize.STRING,
@@ -14,11 +12,11 @@ const Product = db.define('products', {
         allowNull: false
     },
     price: {
-        type: Sequelize.DECIMAL,
+        type: Sequelize.INTEGER,
         allowNull: false
     },
     quantity: {
-        type: Sequelize.DECIMAL,
+        type: Sequelize.INTEGER,
         allowNull: false,
         defaultValue: 0
     },
