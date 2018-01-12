@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import AppBar from 'material-ui/AppBar';
 import IconButton from 'material-ui/IconButton';
 import IconMenu from 'material-ui/IconMenu';
@@ -8,6 +9,8 @@ import RaisedButton from 'material-ui/RaisedButton';
 import Toggle from 'material-ui/Toggle';
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 import NavigationClose from 'material-ui/svg-icons/navigation/close';
+import { fetchAllCategories } from '../store/categories'
+import CategoryDropDown from './Categories'
 
 
 /**
@@ -16,12 +19,15 @@ import NavigationClose from 'material-ui/svg-icons/navigation/close';
 class Login extends Component {
     static muiName = 'FlatButton';
 
+
+
     render() {
         return (
             <FlatButton {...this.props} label="Login" />
         );
     }
 }
+
 
 const Logged = (props) => (
     <IconMenu
@@ -45,9 +51,17 @@ Logged.muiName = 'IconMenu';
  * to render different components depending on the application state.
  */
 class NavBar extends Component {
-    state = {
-        logged: true,
-    };
+    constructor(props) {
+        super(props)
+        this.state = {
+            logged: true,
+        };
+    }
+
+
+    componentDidMount() {
+        this.props.loadCategories()
+    }
 
     handleChange = (event, logged) => {
         this.setState({ logged: logged });
@@ -58,33 +72,28 @@ class NavBar extends Component {
             <div>
                 <AppBar
                     title="FSAROCKS"
+                    iconElementLeft={<CategoryDropDown categories={this.props.categories} />}
                     iconElementRight={this.state.logged ? <Logged /> : <Login />}
-                    showMenuIconButton={false}
+
                 />
             </div>
         );
     }
 }
 
+function mapStateToProps(storeState) {
+    return {
+        categories: storeState.categories
+    }
+}
+function mapDispactToProps(dispatch, ownProps) {
+    return {
+        loadCategories: () => {
+            dispatch(fetchAllCategories())
+        }
+    }
+}
 
+const NavBarContainer = connect(mapStateToProps, mapDispactToProps)(NavBar)
 
-
-
-
-// <nav>
-//                 {
-//                     isLoggedIn
-//                         ? <div>
-//                             {/* The navbar will show these links after you log in */}
-//                             <Link to="/home">Home</Link>
-//                             <a href="#" onClick={handleClick}>Logout</a>
-//                         </div>
-//                         : <div>
-//                             {/* The navbar will show these links before you log in */}
-//                             <Link to="/login">Login</Link>
-//                             <Link to="/signup">Sign Up</Link>
-//                         </div>
-//                 }
-//             </nav>
-
-export default NavBar
+export default NavBarContainer
