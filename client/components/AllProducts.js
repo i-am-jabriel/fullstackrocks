@@ -2,7 +2,23 @@ import React, {Component} from 'react'
 import {connect} from 'react-redux'
 import {Link} from 'react-router-dom'
 import {fetchProducts} from '../store/allProducts'
+import {GridList, GridTile} from 'material-ui/GridList'
+import IconButton from 'material-ui/IconButton'
+import Subheader from 'material-ui/Subheader'
+import StarBorder from 'material-ui/svg-icons/toggle/star-border'
 
+const styles = {
+  root: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    justifyContent: 'space-around',
+  },
+  gridList: {
+    width: 500,
+    height: 450,
+    overflowY: 'auto',
+  },
+}
 
 /**
  * COMPONENT
@@ -16,21 +32,24 @@ class allProducts extends Component {
 
   render() {
     return (
-      <div id="all-products">
-          <ul>
-          {this.props.allProducts.map( product => (
-              <div className="col-xs-4" key={product.id}>
-                  <Link to={`/products/${product.id}` } >
-                  <img src={product.imageUrl} />
-                  <li>{product.title}</li>
-                  </Link>
-              </div>
+      <div id="all-products" style={styles.root}>
+        <GridList cellHeight={180} style={styles.gridList}>
+          <Subheader>Product List</Subheader>
+          {this.props.allProducts.map((product) => (
+            <Link to={`/products/${product.id}`} key={product.id} >
+              <GridTile
+                title={product.title}
+                //subtitle={<span>by <b>{tile.author}</b></span>}
+                actionIcon={<IconButton><StarBorder color="white" /></IconButton>}
+              >
+                <img src={product.imageUrl} />
+              </GridTile>
+            </Link>
           ))}
-          </ul>
+        </GridList>
       </div>
     )
   }
-
 }
 
 function mapStateToProps (storeState) {
