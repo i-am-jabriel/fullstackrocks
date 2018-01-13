@@ -1,5 +1,6 @@
 import React from 'react';
 import {Tabs, Tab} from 'material-ui/Tabs';
+import FontIcon from 'material-ui/FontIcon';
 import {
     Table,
     TableBody,
@@ -22,7 +23,6 @@ const showCreateCategoryWindow = (id) => {
 const showEditFieldWindow = (fieldName, initalValue) => {
 
 }
-const 
 const Home = (props) => {
     return (
         <div id='admin-view'>
