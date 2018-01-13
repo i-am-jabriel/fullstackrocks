@@ -5,18 +5,23 @@ import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField'
 import IconButton from 'material-ui/IconButton';
 import SignUpForm from './SignUpForm'
-import PersonOutline from 'material-ui/svg-icons/social/person-outline'
-import LoginForm from './LoginForm'
+import AddPerson from 'material-ui/svg-icons/social/person-add'
 
 
 
-class LoginFormContainer extends Component {
+class SignUpFormContainer extends Component {
     constructor(props) {
         super(props)
         this.state = {
             open: false,
             email: '',
-            password: ''
+            password: '',
+            name: '',
+            phone: '',
+            street: '',
+            city: '',
+            state: '',
+            zip: ''
         };
         this.handleClose = this.handleClose.bind(this)
         this.handleOpen = this.handleOpen.bind(this)
@@ -41,21 +46,21 @@ class LoginFormContainer extends Component {
     render() {
         return (
             <div>
-                <IconButton onClick={this.handleOpen} tooltip='Login'>
-                    <PersonOutline />
+                <IconButton onClick={this.handleOpen} tooltip='Sign Up'>
+                    <AddPerson />
                 </IconButton>
                 <Dialog
-                    title="Login"
+                    title="Sign Up"
                     modal={false}
                     open={this.state.open}
                     onRequestClose={this.handleClose}
                     titleStyle={{ textAlign: "center" }}
                 >
-                    <LoginForm handleClose={this.handleClose} formProps={this.state} handleChange={this.handleChange} />
+                    <SignUpForm handleClose={this.handleClose} formProps={this.state} handleChange={this.handleChange} />
                 </Dialog>
             </div>
         );
     }
 }
 
-export default LoginFormContainer;
+export default SignUpFormContainer;

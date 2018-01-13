@@ -8,7 +8,7 @@ import categories from './categories'
 import currentUser from './currentUser'
 import user from './user'
 
-const reducer = combineReducers({ user, allProducts, singleProduct, categories, currentUser })
+const reducer = combineReducers({ allProducts, singleProduct, categories, currentUser })
 const middleware = composeWithDevTools(applyMiddleware(
   thunkMiddleware,
   createLogger({ collapsed: true })
