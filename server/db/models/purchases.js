@@ -1,9 +1,9 @@
 const Sequelize = require('sequelize')
 const db = require('../db')
 
-const Purchase = db.define('order_purchases', {
+const Purchase = db.define('order_products', {
     price: {
-        type: Sequelize.DECIMAL,
+        type: Sequelize.INTEGER,
         allowNull: false
     },
     quantity: {

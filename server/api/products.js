@@ -1,5 +1,5 @@
 const router = require('express').Router()
-const { Product } = require('../db/models')
+const { Product,Category } = require('../db/models')
 
 //If we going to look for a specific product from params preload that and have it available to the request
 router.param('prodId', (req, res, next, prodId) => {
@@ -19,7 +19,7 @@ router.param('prodId', (req, res, next, prodId) => {
 
 //Get all products
 router.get('/', (req, res, next) => {
-    Product.findAll({})
+    Product.findAll({include:[{model:Category}]})
         .then(products => res.json(products))
         .catch(next)
 })

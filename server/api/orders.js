@@ -2,9 +2,11 @@ const router = require('express').Router()
 const Order = require('../db/models/order')
 const Purchase = require('../db/models/purchases')
 
+
+//TODO: AUTH
 router.get('/',(req,res,next) => {
-    if(req.user && (req.userisAdmin || 1))return next();
-    Order.findAll()
+    if(req.user && (req.user.isAdmin || 1))return next();
+    Order.findAll({include:{all:true}})
         .then(orders => res.json(orders))
         .catch(next);
 });
