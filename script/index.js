@@ -1,6 +1,6 @@
 const db = require('../server/db/index');
 
-const {User, Product, Review, Category, Order} = require('../server/db/models');
+const {User, Product, Review, Category, Order, Purchase} = require('../server/db/models');
 
 db.sync({force:true})
     .then(()=>{
@@ -25,21 +25,21 @@ db.sync({force:true})
             Product.create({
                 title: 'Kevin Garnet',
                 description: 'Garnets ( /ˈɡɑːrnɪt/) are a group of silicate minerals that have been used since the Bronze Age as gemstones and abrasives.',
-                price: 12.99,
+                price: 1299,
                 quantity: 10,
                 imageUrl: 'https://static.wixstatic.com/media/6e7517_0b00d9af3f504048902e4077b12a9a0c~mv2_d_2250_3000_s_2.jpeg/v1/fill/w_1196,h_1196,q_85,usm_0.66_1.00_0.01/6e7517_0b00d9af3f504048902e4077b12a9a0c~mv2_d_2250_3000_s_2.jpeg'
             }),
             Product.create({
                 title: 'Amethyst',
                 description: 'February Birthstone',
-                price: 15.01,
+                price: 1501,
                 quantity: 14,
                 imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e2/Amethyst._Magaliesburg%2C_South_Africa.jpg/1200px-Amethyst._Magaliesburg%2C_South_Africa.jpg'
             }),
             Product.create({
                 title: 'Aquamarine',
                 description: 'March Birthstone',
-                price: 30.25,
+                price: 3025,
                 quantity: 9,
                 imageUrl: 'https://kids.nationalgeographic.com/content/dam/kids/photos/articles/Science/A-G/aquamarine-raw.adapt.945.1.jpg'
             }),
@@ -76,25 +76,22 @@ db.sync({force:true})
             }),
         
             //Index 10
-            //Create Reviews
-        
-            
-        
-            //Index 16
         ])
     .then(arr => {
         const [
             cat1,cat2,cat3,cat4,
             prod1,prod2,prod3,prod4,
             user1,user2,
-            //review1,review2,review3,review4,review5,review6
         ] = arr;
 
         return Promise.all([
-            prod1.setCategory(cat1),
-            prod2.setCategory(cat2),
-            prod3.setCategory(cat3),
-            prod4.setCategory(cat4),
+            prod1.addCategory(cat1),
+            prod2.addCategory(cat2),
+            prod3.addCategory(cat3),
+            prod4.addCategory(cat4),
+            prod1.addCategory(cat2),
+            prod1.addCategory(cat4),
+            prod3.addCategory(cat1),
 
             Review.create({
                 title:'worst item ever made do not buy',
@@ -137,11 +134,50 @@ db.sync({force:true})
                 rating:5,
                 userId:2,
                 productId:3
+            }),
+
+            Order.create({
+                userId:1,
+                total:3*3025,
+                status:'complete'
+            }),
+            Order.create({
+                userId:1,
+                total:3025+1299+1501,
+                status:'active'
             })
         ])
     })
     .then(()=>{
-        console.log('finished seeding')
+        return Promise.all([
+            Purchase.create({
+                price:3025,
+                quantity:3,
+                orderId:1,
+                productId:3
+            }),
+            Purchase.create({
+                price:3025,
+                quantity:1,
+                orderId:2,
+                productId:3
+            }),
+            Purchase.create({
+                price:1299,
+                quantity:1,
+                productId:1,
+                orderId:2
+            }),
+            Purchase.create({
+                price:1501,
+                quantity:1,
+                productId:2,
+                orderId:2
+            })
+        ])
+    })
+    .then(()=>{
+        console.log('finished seeding v3.1415')
         process.exit()
     })
     .catch(console.log)
