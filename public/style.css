@@ -15,11 +15,6 @@ nav a {
   margin: 1em;
 }
 
-form div {
-  margin: 1em;
-  display: inline-block;
-}
-
 
 .prodPreviewImg{
   height: 40%;
@@ -33,4 +28,9 @@ form div {
 
 .homePageContainer{
   text-align: center;
+}
+
+.appBar{
+  display: inline-flex;
+  justify-content: flex-start;
 }
