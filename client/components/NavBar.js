@@ -12,24 +12,14 @@ import NavigationClose from 'material-ui/svg-icons/navigation/close';
 import { fetchAllCategories } from '../store/categories'
 import CategoryDropDown from './Categories'
 import { NavLink } from 'react-router-dom'
+import SignUpFormContainer from './SignUpFormContainer'
 import LoginFormContainer from './LoginFormContainer'
+import { logout } from '../store/currentUser'
 
 
 /**
  * COMPONENT
  */
-// class Login extends Component {
-//     static muiName = 'FlatButton';
-
-
-
-//     render() {
-//         return (
-//             <FlatButton {...this.props} label="Login" />
-//         );
-//     }
-// }
-
 
 const Logged = (props) => (
     <IconMenu
@@ -42,7 +32,7 @@ const Logged = (props) => (
     >
         <MenuItem primaryText="Home" />
         <MenuItem primaryText="Cart" />
-        <MenuItem primaryText="Sign out" />
+        <MenuItem primaryText="Sign out" onClick={props.logoutuser} />
     </IconMenu>
 );
 
@@ -55,9 +45,9 @@ Logged.muiName = 'IconMenu';
 class NavBar extends Component {
     constructor(props) {
         super(props)
-        this.state = {
-            logged: false,
-        };
+        // this.state = {
+        //     logged: false,
+        // };
     }
 
 
@@ -79,7 +69,10 @@ class NavBar extends Component {
                         <NavLink to={`/`}><h1>FSAROCKS</h1></NavLink>
                         <CategoryDropDown categories={this.props.categories} />
                         {
-                            this.state.logged ? <Logged /> : <LoginFormContainer />
+                            this.props.currentUser.id ? <Logged logoutuser={this.props.logoutUser} /> :
+                                <div className='loginButtons'>
+                                    <SignUpFormContainer /> <LoginFormContainer />
+                                </div>
                         }
                     </div>
                 </AppBar>
@@ -90,13 +83,17 @@ class NavBar extends Component {
 
 function mapStateToProps(storeState) {
     return {
-        categories: storeState.categories
+        categories: storeState.categories,
+        currentUser: storeState.currentUser
     }
 }
 function mapDispactToProps(dispatch, ownProps) {
     return {
         loadCategories: () => {
             dispatch(fetchAllCategories())
+        },
+        logoutUser: () => {
+            dispatch(logout())
         }
     }
 }
