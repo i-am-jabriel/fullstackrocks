@@ -3,14 +3,14 @@ import React from 'react'
 /**
  * COMPONENT
  */
-const Home = (props) => {
+const Footer = (props) => {
 
 
     return (
         <div>
-            <h3>Welcome, home</h3>
+            <h3>FullStackRocks 2017 &copy;</h3>
         </div>
     )
 }
 
-export default Home
+export default Footer;

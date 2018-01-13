@@ -1,5 +1,5 @@
 const router = require('express').Router()
-const { Product,Category } = require('../db/models')
+const { Product,Category, Review, User } = require('../db/models')
 
 //If we going to look for a specific product from params preload that and have it available to the request
 router.param('prodId', (req, res, next, prodId) => {
@@ -32,8 +32,17 @@ router.post('/', (req, res, next) => {
 })
 
 //Get a specific item by id
-router.get('/:prodId', (req, res) => {
+router.get('/:prodId', (req, res, next) => {
     res.json(req.product)
+})
+
+router.get('/:prodId/reviews', (req, res, next) => {
+    Review.findAll({
+        where: {productId: req.params.prodId},
+        include: {model: User}
+    })
+    .then(productReviews => res.json(productReviews))
+    .catch(next)
 })
 
 //Edit a item by id
@@ -42,7 +51,6 @@ router.put('/:prodId', (req, res, next) => {
         .then(product => res.json(product))
         .catch(next)
 })
-
 
 //delete a product by id
 router.delete('/:prodId', (req, res, next) => {

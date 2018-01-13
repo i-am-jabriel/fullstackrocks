@@ -9,6 +9,7 @@ import AllProducts from './components/AllProducts'
 import SingleProduct from './components/SingleProduct'
 import NavBar from './components/NavBar'
 import SingleUser from './components/SingleUser'
+import {fetchCurrentUser} from './store/currentUser'
 
 import { me } from './store'
 
@@ -58,14 +59,15 @@ const mapState = (state) => {
   return {
     // Being 'logged in' for our purposes will be defined has having a state.user that has a truthy id.
     // Otherwise, state.user will be an empty object, and state.user.id will be falsey
-    isLoggedIn: !!state.user.id
+    isLoggedIn: !!state.currentUser.id
   }
 }
 
 const mapDispatch = (dispatch) => {
   return {
     loadInitialData() {
-      dispatch(me())
+      console.log('in dispatch')
+      dispatch(fetchCurrentUser())
     }
   }
 }
