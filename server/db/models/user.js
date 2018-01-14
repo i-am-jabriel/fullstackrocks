@@ -27,27 +27,22 @@ const User = db.define('users', {
     defaultValue: false
   },
   street: {
-    type: Sequelize.STRING,
-    allowNull: false
+    type: Sequelize.STRING
   },
   city: {
-    type: Sequelize.STRING,
-    allowNull: false
+    type: Sequelize.STRING
   },
   state: {
-    type: Sequelize.STRING,
-    allowNull: false
+    type: Sequelize.STRING
   },
   zip: {
     type: Sequelize.STRING,
-    allowNull: false,
     validate: {
       len: [5, 5]
     }
   },
   phone: {
     type: Sequelize.STRING,
-    allowNull: false,
     validate: {
       len: [12, 12]
     }
