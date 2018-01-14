@@ -71,7 +71,13 @@ class NavBar extends Component {
                         {
                             this.props.currentUser.id ? <Logged logoutuser={this.props.logoutUser} /> :
                                 <div className='loginButtons'>
-                                    <SignUpFormContainer /> <LoginFormContainer />
+                                    <SignUpFormContainer />
+                                    <LoginFormContainer />
+                                    <a
+                                        href='/auth/google'
+                                    >
+                                        <span>log in with google?</span>
+                                    </a>
                                 </div>
                         }
                     </div>
