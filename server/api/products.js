@@ -1,5 +1,5 @@
 const router = require('express').Router()
-const { Product,Category, Review, User } = require('../db/models')
+const { Product,Category, Review, User} = require('../db/models')
 
 //If we going to look for a specific product from params preload that and have it available to the request
 router.param('prodId', (req, res, next, prodId) => {
@@ -11,6 +11,20 @@ router.param('prodId', (req, res, next, prodId) => {
                 throw err
             }
             req.product = product
+            next()
+            return null
+        })
+        .catch(next)
+})
+router.param('categoryName', (req, res, next, name) => {
+    Category.findOne({where:{name}})
+        .then(function (category) {
+            if (!category) {
+                const err = new Error('Category not found!');
+                err.status = 404
+                throw err
+            }
+            req.category = category
             next()
             return null
         })
@@ -36,6 +50,7 @@ router.get('/:prodId', (req, res, next) => {
     res.json(req.product)
 })
 
+//Get all reviews for a specific item
 router.get('/:prodId/reviews', (req, res, next) => {
     Review.findAll({
         where: {productId: req.params.prodId},
@@ -43,6 +58,21 @@ router.get('/:prodId/reviews', (req, res, next) => {
     })
     .then(productReviews => res.json(productReviews))
     .catch(next)
+})
+
+
+//Add or remove a category to a specific item
+//TODO: AUTH
+router.get('/:prodId/addCategory/:categoryName',(req,res,next) => {
+    req.product.addCategory(req.category)
+    .then(data => res.sendStatus(200))
+    .catch(next)
+})
+//TODO: AUTH
+router.get('/:prodId/removeCategory/:categoryName',(req,res,next) => {
+    req.product.removeCategory(req.category)
+        .then(data => res.sendStatus(200))
+        .catch(next)
 })
 
 //Edit a item by id

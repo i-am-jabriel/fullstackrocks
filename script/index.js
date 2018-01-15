@@ -46,7 +46,7 @@ db.sync({force:true})
             Product.create({
                 title: 'Pink Star Diamond',
                 description: 'The most rare and expensive gem. 59 karats',
-                price: 83000000,
+                price: 8300000000,
                 quantity: 1,
                 imageUrl: 'https://www.ritani.com/wp-content/uploads/2014/11/pink-star-diamond-nbc-news1.jpg'
             }),
