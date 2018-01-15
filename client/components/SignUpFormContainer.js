@@ -46,9 +46,7 @@ class SignUpFormContainer extends Component {
     render() {
         return (
             <div>
-                <IconButton onClick={this.handleOpen} tooltip='Sign Up'>
-                    <AddPerson />
-                </IconButton>
+                <RaisedButton label='SignUp' onClick={this.handleOpen} />
                 <Dialog
                     title="Sign Up"
                     modal={false}
