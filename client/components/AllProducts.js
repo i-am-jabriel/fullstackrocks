@@ -46,7 +46,7 @@ class allProducts extends Component {
   }
 
   render() {
-    console.log(this.props.allProducts[0])
+    console.log(this.state.categoryVal)
     return (
       <div id="all-products" style={styles.root}>
         <Categories categories={this.props.categories} categoryVal={this.state.categoryVal} getCategoryValue={this.getCategoryValue} />
