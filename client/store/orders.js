@@ -18,7 +18,7 @@ export const fetchUserOrders = (uid) => {
 
 export const fetchAllOrders = () => {
     return function(dispatch) {
-        axios.get(`/api/order/`)
+        axios.get(`/api/orders/`)
         .then(res => res.data)
         .then(orders => dispatch(setOrders(orders)))
     }
