@@ -18,7 +18,7 @@ export const fetchUserOrders = (uid) => {
 
 export const fetchAllOrders = () => {
     return function(dispatch) {
-        axios.get(`/api/order/`)
+        axios.get(`/api/orders/`)
         .then(res => res.data)
         .then(orders => dispatch(setOrders(orders)))
     }
@@ -27,7 +27,8 @@ export const fetchAllOrders = () => {
 export default (prevState = [], action) => {
     switch(action.type){
         case GET_ALL_ORDERS:
-            action = action.orders;
-            break;
+            return action.orders;
+        default:
+            return prevState;
     }
 }

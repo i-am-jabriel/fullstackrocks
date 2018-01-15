@@ -50,8 +50,10 @@ form#user-input>div{
 #user-profile-view admin-view-container{
   padding:30px;
 }
-.admin-table td.clickable{
+.clickable{
   cursor:pointer;
+}
+.admin-table td.clickable{
   padding:0!important;
 }
 .admin-table td.clickable span{
