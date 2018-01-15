@@ -9,7 +9,7 @@ import AllProducts from './components/AllProducts'
 import SingleProduct from './components/SingleProduct'
 import NavBar from './components/NavBar'
 import SingleUser from './components/SingleUser'
-import {fetchCurrentUser} from './store/currentUser'
+import { fetchCurrentUser } from './store/currentUser'
 
 import { me } from './store'
 
@@ -34,13 +34,14 @@ class Routes extends Component {
             <Route path="/signup" component={Signup} />
             <Route exact path="/products" component={AllProducts} />
             <Route path="/products/:prodId" component={SingleProduct} />
-            <Route path="/users/:userId" component={SingleUser} />
+
 
             {
               (isLoggedIn || 1) &&
               <Switch>
                 {/* Routes placed here are only available after logging in */}
-                <Route path="/profile" component={UserProfile} />
+                <Route path="/users" component={UserProfile} />
+                <Route path="/users/:userId" component={UserProfile} />
               </Switch>
             }
             {/* Displays our Login component as a fallback */}

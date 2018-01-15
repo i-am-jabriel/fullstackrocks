@@ -6,10 +6,20 @@ const User = db.define('users', {
   email: {
     type: Sequelize.STRING,
     unique: true,
-    allowNull: false
+    allowNull: false,
+    validate: {
+      len: {
+        $gt: 0
+      }
+    }
   },
   password: {
-    type: Sequelize.STRING
+    type: Sequelize.STRING,
+    validate: {
+      len: {
+        $gt: 0
+      }
+    }
   },
   salt: {
     type: Sequelize.STRING

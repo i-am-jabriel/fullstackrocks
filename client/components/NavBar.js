@@ -17,6 +17,7 @@ import LoginFormContainer from './LoginFormContainer'
 import { logout } from '../store/currentUser'
 
 
+
 /**
  * COMPONENT
  */
@@ -30,8 +31,9 @@ const Logged = (props) => (
         targetOrigin={{ horizontal: 'right', vertical: 'top' }}
         anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
     >
-        <MenuItem primaryText="Home" />
+        <NavLink to={`/`}><MenuItem primaryText="Home" /></NavLink>
         <MenuItem primaryText="Cart" />
+        <NavLink to={`/users/${props.currentUser.id}`}><MenuItem primaryText="Profile" /></NavLink>
         <MenuItem primaryText="Sign out" onClick={props.logoutuser} />
     </IconMenu>
 );
@@ -45,16 +47,7 @@ Logged.muiName = 'IconMenu';
 class NavBar extends Component {
     constructor(props) {
         super(props)
-        // this.state = {
-        //     logged: false,
-        // };
     }
-
-
-    componentDidMount() {
-        this.props.loadCategories()
-    }
-
     handleChange = (event, logged) => {
         this.setState({ logged: logged });
     };
@@ -66,17 +59,19 @@ class NavBar extends Component {
                     showMenuIconButton={false}
                 >
                     <div className='appBar'>
-                        <NavLink to={`/`}><h1>FSAROCKS</h1></NavLink>
-                        <CategoryDropDown categories={this.props.categories} />
+                        <div className='navBarButtons'>
+                            <NavLink to={`/`}><h1>FSAROCKS</h1></NavLink>
+                            <NavLink to={'/products'}><RaisedButton label='Products' /></NavLink>
+                        </div>
                         {
-                            this.props.currentUser.id ? <Logged logoutuser={this.props.logoutUser} /> :
+                            this.props.currentUser.id ? <Logged logoutuser={this.props.logoutUser} currentUser={this.props.currentUser} /> :
                                 <div className='loginButtons'>
                                     <SignUpFormContainer />
                                     <LoginFormContainer />
                                     <a
                                         href='/auth/google'
                                     >
-                                        <span>log in with google?</span>
+                                        <RaisedButton label='Login with Google' />
                                     </a>
                                 </div>
                         }
@@ -89,15 +84,11 @@ class NavBar extends Component {
 
 function mapStateToProps(storeState) {
     return {
-        categories: storeState.categories,
         currentUser: storeState.currentUser
     }
 }
 function mapDispactToProps(dispatch, ownProps) {
     return {
-        loadCategories: () => {
-            dispatch(fetchAllCategories())
-        },
         logoutUser: () => {
             dispatch(logout())
         }

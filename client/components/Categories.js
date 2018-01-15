@@ -1,6 +1,7 @@
 import React from 'react';
 import DropDownMenu from 'material-ui/DropDownMenu';
 import MenuItem from 'material-ui/MenuItem';
+import { NavLink } from 'react-router-dom'
 
 const styles = {
     customWidth: {
@@ -9,18 +10,16 @@ const styles = {
 };
 
 export default class CategoryDropDown extends React.Component {
-
     constructor(props) {
         super(props);
-        this.state = { value: 1 };
     }
 
-    handleChange = (event, index, value) => this.setState({ value });
+    handleChange = (event, index, value) => this.props.getCategoryValue(value);
 
     render() {
         return (
             <div>
-                <DropDownMenu value={this.state.value} onChange={this.handleChange}>
+                <DropDownMenu value={this.props.categoryVal} onChange={this.handleChange}>
                     <MenuItem key={0} value={1} primaryText='Categories' />
                     {
                         this.props.categories.map(category =>

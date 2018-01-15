@@ -44,7 +44,7 @@ export const fetchCurrentUser = () => dispatch => {
 }
 
 export const logout = () => dispatch => {
-    axios.post('/api/auth/logout')
+    axios.post('/auth/logout')
         .then(() => {
             dispatch(removeCurrentUser())
             history.push('/')
