@@ -21,18 +21,21 @@ router.param('userId', (req, res, next, userId) => {
 })
 
 router.get('/', (req, res, next) => {
-  User.findAll({
-    // explicitly select only the id and email fields - even though
-    // users' passwords are encrypted, it won't help if we just
-    // send everything to anyone who asks!
-    attributes: ['id', 'email']
-  })
-    .then(users => res.json(users))
-    .catch(next)
+  if (req.user && req.user.isAdmin) {
+    User.findAll({
+      // explicitly select only the id and email fields - even though
+      // users' passwords are encrypted, it won't help if we just
+      // send everything to anyone who asks!
+      attributes: ['id', 'email']
+    })
+      .then(users => res.json(users))
+      .catch(next)
+  }
 })
 
 //Create a new user
 router.post('/', (req, res, next) => {
+  //should creating a user be protected?
   User.create(req.body)
     .then(user => res.json(user))
     .catch(next)
@@ -40,35 +43,40 @@ router.post('/', (req, res, next) => {
 //REDUDANCY?
 //Get a specific user by id
 router.get('/:userId', (req, res) => {
-  console.log(req)
-  if (req.user && req.user.id === Number(req.params.id)) {
+  if (req.user && req.user.isAdmin || req.user.id === Number(req.params.userId)) {
     res.json(req.user)
   }
 })
 //TODO: AUTH
 //Update a user by id
 router.put('/:userId', (req, res, next) => {
-  req.user.update(req.body, { returning: true })
-    .then(user => res.json(user))
-    .catch(next)
+  if (req.user && req.user.isAdmin || req.user.id === Number(req.params.userId)) {
+    req.user.update(req.body, { returning: true })
+      .then(user => res.json(user))
+      .catch(next)
+  }
 })
 //TODO: AUTH
 //delete a user by id
 router.delete('/:userId', (req, res, next) => {
-  req.user.destroy()
-    .then(rows => res.send(rows))
-    .catch(next)
+  if (req.user && req.user.isAdmin || req.user.id === Number(req.params.userId)) {
+    req.user.destroy()
+      .then(rows => res.send(rows))
+      .catch(next)
+  }
 })
 
 //Get all orders for a user
 //TODO: AUTH
-router.get('/:uid/orders', (req, res, next) => {
-  Order.findAll({
-    where: { userId: req.params.uid },
-    include: { all: true }
-  })
-    .then(orders => res.json(orders))
-    .catch(next)
+router.get('/:userId/orders', (req, res, next) => {
+  if (req.user && req.user.isAdmin || req.user.id === Number(req.params.userId)) {
+    Order.findAll({
+      where: { userId: req.params.userId },
+      include: { all: true }
+    })
+      .then(orders => res.json(orders))
+      .catch(next)
+  }
 });
 
 module.exports = router
