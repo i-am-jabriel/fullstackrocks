@@ -14,7 +14,7 @@ export default class CategoryDropDown extends React.Component {
         super(props);
     }
 
-    handleChange = (event, index, value) => this.props.getCategoryVal(value);
+    handleChange = (event, index, value) => this.props.getCategoryValue(value);
 
     render() {
         return (

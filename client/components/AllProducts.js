@@ -33,7 +33,7 @@ class allProducts extends Component {
     this.state = {
       categoryVal: 0
     }
-    this.getCategoryValue = this.bind.getCategoryValue();
+    this.getCategoryValue = this.getCategoryValue.bind(this);
   }
 
   getCategoryValue(categoryVal) {
@@ -46,7 +46,7 @@ class allProducts extends Component {
   }
 
   render() {
-    console.log(this.props.allProducts[0])
+    console.log(this.state.categoryVal)
     return (
       <div id="all-products" style={styles.root}>
         <Categories categories={this.props.categories} categoryVal={this.state.categoryVal} getCategoryValue={this.getCategoryValue} />

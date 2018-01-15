@@ -7,7 +7,7 @@ import singleProduct from './singleProduct'
 import reviews from './productReviews'
 import categories from './categories'
 import currentUser from './currentUser'
-import user from './user'
+
 
 const reducer = combineReducers({ allProducts, singleProduct, categories, currentUser, reviews })
 const middleware = composeWithDevTools(applyMiddleware(
@@ -17,4 +17,4 @@ const middleware = composeWithDevTools(applyMiddleware(
 const store = createStore(reducer, middleware)
 
 export default store
-export * from './user'
+
