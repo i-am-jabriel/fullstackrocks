@@ -19,10 +19,11 @@ import Chip from 'material-ui/Chip';
 import MenuItem from 'material-ui/MenuItem';
 import {fetchProducts} from '../store/allProducts';
 import {fetchAllCategories} from '../store/categories';
+import {fetchAllOrders} from '../store/orders';
 import { connect } from 'react-redux';
 
-/* Helper Functions */
 const productFieldNames = ['title','description','price','quantity','imageUrl'];
+/* Helper Functions */
 const concat = (str,len=20) =>{
     if(str.length<=len)return str
     return str.substring(0,len-3)+'...'
@@ -47,7 +48,7 @@ class AdminUser extends React.Component{
             editCategoriesWindow:false,
             editFieldWindow:false,
             window:{},
-            refresh:0,
+            refresh:0, //A variable to help force page refreshs
         }
 
         //Make is so that if you press enter its the same as pressing the submit button
@@ -80,6 +81,7 @@ class AdminUser extends React.Component{
     componentDidMount(){
         this.props.loadProducts();
         this.props.loadCategories();
+        this.props.loadOrders();
     }
     showCreateProductWindow(){
         this.setState({
@@ -135,7 +137,7 @@ class AdminUser extends React.Component{
         switch(type){
             case 'products':
                 data[fieldName]=$('#edit-data-field')[0].value
-                if(fieldName==='price')data[fieldName]*=100
+                //if(fieldName==='price')data[fieldName]*=100
                 break
             case 'create category':
                 data['name']=$('#add-category-field')[0].value
@@ -143,7 +145,7 @@ class AdminUser extends React.Component{
             case 'create product':
                 productFieldNames.forEach(field=>{
                     data[field]=$('#create-product-input-'+field)[0].value
-                    if(field==='price')data[field]*=100
+                    //if(field==='price')data[field]*=100
                 })
                 break
         }
@@ -196,9 +198,10 @@ class AdminUser extends React.Component{
             .catch(console.error)
     }
     render(){
-        let products = this.props.products || [];
-        let allCategories = this.props.categories || [];
-        //If we're on the edit category dialog map what tags are available vs 
+        let products = this.props.products || []
+        let orders = this.props.orders || []
+        let allCategories = this.props.categories || []
+        //If we're editing a products category dialog map what tags are available to be added
         let productCategories = [], remainingCategories = []
         if(this.state.window.type === 'edit categories'){
             console.log('re-rendered');
@@ -345,7 +348,7 @@ class AdminUser extends React.Component{
                                                 <span onClick={()=>this.showEditFieldWindow('products',product.id,'quantity',product.quantity,product)}>{product.quantity}</span>
                                             </TRC>
                                             <TRC className='clickable'>
-                                                <span onClick={()=>this.showEditFieldWindow('products',product.id,'price',product.price/100,product)}>${product.price / 100}</span>
+                                                <span onClick={()=>this.showEditFieldWindow('products',product.id,'price',product.showPrice,product)}>${product.showPrice}</span>
                                             </TRC>
                                             <TRC className='clickable'>
                                                 <span onClick={()=>this.showEditFieldWindow('products',product.id,'imageUrl',product.imageUrl,product)}>{concat(product.imageUrl)}</span>
@@ -361,6 +364,59 @@ class AdminUser extends React.Component{
                     <Tab
                     icon={<FontIcon className="material-icons">query_builder</FontIcon>}
                     label="Order Management">
+                        <Table fixedHeader={true} showRowHover={true} selectable={false} id='admin-product-table' className='admin-table'>
+                            <TableHeader displaySelectAll={false} >
+                                <TableRow>
+                                    <TableHeaderColumn>ID</TableHeaderColumn>
+                                    <TableHeaderColumn>Status</TableHeaderColumn>
+                                    <TableHeaderColumn>Order Date</TableHeaderColumn>
+                                    <TableHeaderColumn>Shipped Date</TableHeaderColumn>
+                                    <TableHeaderColumn>Total</TableHeaderColumn>
+                                </TableRow>
+                            </TableHeader>
+                            <TableBody displayRowCheckbox={false} className='clickable' onCellClick={()=>this.toggleOrderDetails(order.id)}>
+                                {orders.map(order=>{
+                                    return [
+                                        (<TableRow key={'single-order'+order.id}>
+                                            <TRC>{order.id}</TRC>
+                                            <TRC>{order.status}</TRC>
+                                            <TRC>{order.createdAt}</TRC>
+                                            <TRC>{order.shipDate ? order.shipDate : `Not Shipped Yet`}</TRC>
+                                            <TRC>${order.total/100}</TRC>
+                                        </TableRow>
+                                    ),(
+                                        <TableRow key={'order-details'+order.id}>
+                                            <TRC colSpan='5'>
+                                                <div className='order-details'><Table>
+                                                    <TableHeader displaySelectAll={false}><TableRow>
+                                                        <TableHeaderColumn>Item #</TableHeaderColumn>
+                                                        <TableHeaderColumn>Item Name</TableHeaderColumn>
+                                                        <TableHeaderColumn>Purchase Price</TableHeaderColumn>
+                                                        <TableHeaderColumn>Quantity</TableHeaderColumn>
+                                                        <TableHeaderColumn>Total</TableHeaderColumn>
+                                                    </TableRow></TableHeader>
+                                                    <TableBody displayRowCheckbox={false}>
+                                                        { order.products.map((product,i) => {
+                                                            let purchase = product.order_products;
+                                                            return (
+                                                                <TableRow key={'admin-order-product'+i}>
+                                                                    <TRC>{i+1}</TRC>
+                                                                    <TRC>{product.title}</TRC>
+                                                                    <TRC>${purchase.price /100}</TRC>
+                                                                    <TRC>{purchase.quantity}</TRC>
+                                                                    <TRC>${purchase.price * purchase.quantity / 100}</TRC>
+                                                                </TableRow>
+                                                        )})}
+                                                    </TableBody>
+                                                </Table></div>
+                                            </TRC>
+                                        </TableRow>
+                                    )
+                                    ]
+                                    
+                                })}
+                            </TableBody>
+                        </Table>
                     </Tab>
                     <Tab
                     icon={<FontIcon className="material-icons">perm_identity</FontIcon>}
@@ -374,10 +430,12 @@ class AdminUser extends React.Component{
 //let tempProducts = [{"id":1,"title":"Kevin Garnet","description":"Garnets ( /ˈɡɑːrnɪt/) are a group of silicate minerals that have been used since the Bronze Age as gemstones and abrasives.","price":1299,"quantity":10,"imageUrl":"https://static.wixstatic.com/media/6e7517_0b00d9af3f504048902e4077b12a9a0c~mv2_d_2250_3000_s_2.jpeg/v1/fill/w_1196,h_1196,q_85,usm_0.66_1.00_0.01/6e7517_0b00d9af3f504048902e4077b12a9a0c~mv2_d_2250_3000_s_2.jpeg","createdAt":"2018-01-13T19:26:09.525Z","updatedAt":"2018-01-13T19:26:09.525Z","categories":[{"id":1,"name":"Faceted","createdAt":"2018-01-13T19:26:09.523Z","updatedAt":"2018-01-13T19:26:09.523Z","product_catagories":{"createdAt":"2018-01-13T19:26:09.624Z","updatedAt":"2018-01-13T19:26:09.624Z","productId":1,"categoryId":1}},{"id":2,"name":"Rough","createdAt":"2018-01-13T19:26:09.524Z","updatedAt":"2018-01-13T19:26:09.524Z","product_catagories":{"createdAt":"2018-01-13T19:26:09.637Z","updatedAt":"2018-01-13T19:26:09.637Z","productId":1,"categoryId":2}},{"id":4,"name":"Mineral Specimen","createdAt":"2018-01-13T19:26:09.525Z","updatedAt":"2018-01-13T19:26:09.525Z","product_catagories":{"createdAt":"2018-01-13T19:26:09.640Z","updatedAt":"2018-01-13T19:26:09.640Z","productId":1,"categoryId":4}}]},{"id":2,"title":"Amethyst","description":"February Birthstone","price":1501,"quantity":14,"imageUrl":"https://upload.wikimedia.org/wikipedia/commons/thumb/e/e2/Amethyst._Magaliesburg%2C_South_Africa.jpg/1200px-Amethyst._Magaliesburg%2C_South_Africa.jpg","createdAt":"2018-01-13T19:26:09.526Z","updatedAt":"2018-01-13T19:26:09.526Z","categories":[{"id":2,"name":"Rough","createdAt":"2018-01-13T19:26:09.524Z","updatedAt":"2018-01-13T19:26:09.524Z","product_catagories":{"createdAt":"2018-01-13T19:26:09.629Z","updatedAt":"2018-01-13T19:26:09.629Z","productId":2,"categoryId":2}}]},{"id":4,"title":"Pink Star Diamond","description":"The most rare and expensive gem. 59 karats","price":83000000,"quantity":1,"imageUrl":"https://www.ritani.com/wp-content/uploads/2014/11/pink-star-diamond-nbc-news1.jpg","createdAt":"2018-01-13T19:26:09.526Z","updatedAt":"2018-01-13T19:26:09.526Z","categories":[{"id":4,"name":"Mineral Specimen","createdAt":"2018-01-13T19:26:09.525Z","updatedAt":"2018-01-13T19:26:09.525Z","product_catagories":{"createdAt":"2018-01-13T19:26:09.633Z","updatedAt":"2018-01-13T19:26:09.633Z","productId":4,"categoryId":4}}]},{"id":3,"title":"Aquamarine","description":"March Birthstone","price":3025,"quantity":9,"imageUrl":"https://kids.nationalgeographic.com/content/dam/kids/photos/articles/Science/A-G/aquamarine-raw.adapt.945.1.jpg","createdAt":"2018-01-13T19:26:09.526Z","updatedAt":"2018-01-13T19:26:09.526Z","categories":[{"id":3,"name":"Rocks","createdAt":"2018-01-13T19:26:09.525Z","updatedAt":"2018-01-13T19:26:09.525Z","product_catagories":{"createdAt":"2018-01-13T19:26:09.633Z","updatedAt":"2018-01-13T19:26:09.633Z","productId":3,"categoryId":3}},{"id":1,"name":"Faceted","createdAt":"2018-01-13T19:26:09.523Z","updatedAt":"2018-01-13T19:26:09.523Z","product_catagories":{"createdAt":"2018-01-13T19:26:09.644Z","updatedAt":"2018-01-13T19:26:09.644Z","productId":3,"categoryId":1}}]}];
 
 function mapStateToProps(store) {
-    let {categories, allProducts:products} = store;
+    let {categories, allProducts:products,orders} = store;
+    console.log(store);
     return {
         categories,
-        products
+        products,
+        orders
     }
 }
 function mapDispatchToProps(dispatch, ownProps) {
@@ -387,6 +445,9 @@ function mapDispatchToProps(dispatch, ownProps) {
         },
         loadProducts: () => {
             dispatch(fetchProducts())
+        },
+        loadOrders: () => {
+            dispatch(fetchAllOrders())
         }
     }
 }

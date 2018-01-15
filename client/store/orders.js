@@ -27,7 +27,8 @@ export const fetchAllOrders = () => {
 export default (prevState = [], action) => {
     switch(action.type){
         case GET_ALL_ORDERS:
-            action = action.orders;
-            break;
+            return action.orders;
+        default:
+            return prevState;
     }
 }

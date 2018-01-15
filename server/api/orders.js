@@ -5,7 +5,7 @@ const Purchase = require('../db/models/purchases')
 
 //TODO: AUTH
 router.get('/',(req,res,next) => {
-    if(req.user && (req.user.isAdmin || 1))return next();
+    if((req.user && req.user.isAdmin) && 0)return next();
     Order.findAll({include:{all:true}})
         .then(orders => res.json(orders))
         .catch(next);

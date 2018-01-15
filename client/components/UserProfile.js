@@ -50,8 +50,10 @@ form#user-input>div{
 #user-profile-view admin-view-container{
   padding:30px;
 }
-.admin-table td.clickable{
+.clickable{
   cursor:pointer;
+}
+.admin-table td.clickable{
   padding:0!important;
 }
 .admin-table td.clickable span{
@@ -105,73 +107,77 @@ function onPhoneChange(evt) {
   if (field.value.length > 12) field.value = field.value.substring(0, 12);
 }
 export const UserProfile = (props) => {
-  console.log(document.getElementById('zip'));
-  const { email, user } = props
-
+  const {email, currentUser:user} = props
+  //I have to do the because default value likes to act funky
+  //When it re-renders it will not update defaultValue of an input
+  ;['name','street','city','state','zip','phone'].forEach(field=>{
+    let elem = $('#'+field)[0]
+    if(!elem)return
+    elem.value = user[field]
+  })
   return (
     <div id='user-profile-view'>
       <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
       <style>{css}</style>
       <Paper zDepth={2}>
-        <Tabs>
-          <Tab
-            icon={<FontIcon className="material-icons">info_outline</FontIcon>}
-            label="Edit Data"
-          >
-            <h3>Profile Data</h3> <hr />
-            <form id='user-input' onSubmit={atttemptSubmitUserData}>
-              <TextField hintText='Name' id="name" /><br />
-              <TextField hintText='Street' id='street' /><br />
-              <TextField hintText='City' id='city' /><br />
-              <TextField hintText='State' id='state' /><br />
-              <TextField hintText='Zip' id='zip' onChange={onZipChange} /><br />
-              <TextField hintText='Phone Number' id='phone' onChange={onPhoneChange} /><br />
-              <RaisedButton label="Submit" onClick={atttemptSubmitUserData} />
-            </form>
-          </Tab>
-          <Tab
-            icon={<FontIcon className="material-icons">restore</FontIcon>}
-            label="Order History"
-          >
-            <h3>Order History</h3> <hr />
-            <table><tbody>
-              <tr>
-                <th>Order Id</th>
-                <th>Order Status</th>
-                <th>Order Date</th>
-                <th>Shipped Date</th>
-                <th>Order Total</th>
-              </tr>
-              {props.orders.map((order, i) => {
-                return [(
-                  <tr key={'order' + i} className='single-order' onClick={() => toggleOrderDetails(i)}>
-                    <td>{order.id}</td>
-                    <td>{order.status}</td>
-                    <td>{order.createdAt}</td>
-                    <td>{order.shipDate ? order.shipDate : `Not Shipped Yet`}</td>
-                    <td>${order.total / 100}</td>
-                  </tr>), (
-                  <tr key={'detail' + i}><td colSpan='5'>
-                    <div className='order-details'><table><tbody>
-                      <tr>
-                        <th>Item #</th>
-                        <th>Item Name</th>
-                        <th>Purchase Price</th>
-                        <th>Quantity</th>
-                        <th>Total</th>
+      <Tabs>
+      <Tab
+      icon={<FontIcon className="material-icons">info_outline</FontIcon>}
+      label="Edit Data"
+      >
+        <h3>Profile Data</h3> <hr />
+        <form id='user-input' onSubmit={atttemptSubmitUserData}>
+          <TextField floatingLabelText='Name' floatingLabelFixed={true}  id="name" defaultValue={user.name}/><br />
+          <TextField floatingLabelText='Street'  floatingLabelFixed={true} id='street' defaultValue={user.street}/><br />
+          <TextField floatingLabelText='City'  floatingLabelFixed={true} id='city' defaultValue={user.city}/><br />
+          <TextField floatingLabelText='State'  floatingLabelFixed={true} id='state' defaultValue={user.state}/><br />
+          <TextField floatingLabelText='Zip' floatingLabelFixed={true} id='zip' onChange={onZipChange} defaultValue={user.zip}/><br />
+          <TextField floatingLabelText='Phone Number' floatingLabelFixed={true} id='phone' onChange={onPhoneChange} defaultValue={user.phone}/><br />
+          <RaisedButton label="Submit" onClick={atttemptSubmitUserData} />
+        </form>
+      </Tab>
+      <Tab
+      icon={<FontIcon className="material-icons">restore</FontIcon>}
+      label="Order History"
+      >
+        <h3>Order History</h3> <hr />
+        <table><tbody>
+          <tr>
+            <th>Order Id</th>
+            <th>Order Status</th>
+            <th>Order Date</th>
+            <th>Shipped Date</th>
+            <th>Order Total</th>
+          </tr>
+          { props.orders.map((order,i) => {
+            return [(
+              <tr key={'order'+i} className='single-order' onClick={()=>toggleOrderDetails(i)}>
+                <td>{order.id}</td>
+                <td>{order.status}</td>
+                <td>{order.createdAt}</td>
+                <td>{order.shipDate ? order.shipDate : `Not Shipped Yet`}</td>
+                <td>${order.total/100}</td>
+              </tr>),(
+              <tr key={'detail'+i}><td colSpan='5'>
+                <div className='order-details'><table><tbody>
+                  <tr>
+                    <th>Item #</th>
+                    <th>Item Name</th>
+                    <th>Purchase Price</th>
+                    <th>Quantity</th>
+                    <th>Total</th>
+                  </tr>
+                  { order.products.map((product,i) => {
+                    let purchase = product.order_products;
+                    return (
+                      <tr key={'product'+i}>
+                        <td>{i+1}</td>
+                        <td>{product.title}</td>
+                        <td>${purchase.price /100}</td>
+                        <td>{purchase.quantity}</td>
+                        <td>${purchase.price * purchase.quantity / 100}</td>
                       </tr>
-                      {order.products.map((product, i) => {
-                        let purchase = product.order_products;
-                        return (
-                          <tr key={'product' + i}>
-                            <td>{i + 1}</td>
-                            <td>{product.title}</td>
-                            <td>${purchase.price / 100}</td>
-                            <td>{purchase.quantity}</td>
-                            <td>${purchase.price * purchase.quantity / 100}</td>
-                          </tr>
-                        )
-                      })}
+                  )})}
                     </tbody></table></div>
                   </td></tr>
                 )]
@@ -202,7 +208,7 @@ const mapState = (state) => {
   return {
     email: state.user ? state.user.email : '',
     orders: state.orders || tempOrder,
-    currentUser: state.currentUser
+    currentUser : state.currentUser || {}
   }
 }
 
