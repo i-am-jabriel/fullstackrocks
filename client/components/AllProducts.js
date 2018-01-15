@@ -33,7 +33,7 @@ class allProducts extends Component {
     this.state = {
       categoryVal: 0
     }
-    this.getCategoryValue = this.bind.getCategoryValue();
+    this.getCategoryValue = this.getCategoryValue.bind(this);
   }
 
   getCategoryValue(categoryVal) {
