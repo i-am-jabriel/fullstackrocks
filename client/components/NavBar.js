@@ -17,6 +17,7 @@ import LoginFormContainer from './LoginFormContainer'
 import { logout } from '../store/currentUser'
 
 
+
 /**
  * COMPONENT
  */
@@ -30,8 +31,9 @@ const Logged = (props) => (
         targetOrigin={{ horizontal: 'right', vertical: 'top' }}
         anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
     >
-        <MenuItem primaryText="Home" />
+        <NavLink to={`/`}><MenuItem primaryText="Home" /></NavLink>
         <MenuItem primaryText="Cart" />
+        <NavLink to={`/users/${props.currentUser.id}`}><MenuItem primaryText="Profile" /></NavLink>
         <MenuItem primaryText="Sign out" onClick={props.logoutuser} />
     </IconMenu>
 );
@@ -69,7 +71,7 @@ class NavBar extends Component {
                         <NavLink to={`/`}><h1>FSAROCKS</h1></NavLink>
                         <CategoryDropDown categories={this.props.categories} />
                         {
-                            this.props.currentUser.id ? <Logged logoutuser={this.props.logoutUser} /> :
+                            this.props.currentUser.id ? <Logged logoutuser={this.props.logoutUser} currentUser={this.props.currentUser} /> :
                                 <div className='loginButtons'>
                                     <SignUpFormContainer />
                                     <LoginFormContainer />

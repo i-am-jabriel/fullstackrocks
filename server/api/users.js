@@ -40,7 +40,10 @@ router.post('/', (req, res, next) => {
 //REDUDANCY?
 //Get a specific user by id
 router.get('/:userId', (req, res) => {
-  res.json(req.user)
+  console.log(req)
+  if (req.user && req.user.id === Number(req.params.id)) {
+    res.json(req.user)
+  }
 })
 //TODO: AUTH
 //Update a user by id
@@ -61,8 +64,8 @@ router.delete('/:userId', (req, res, next) => {
 //TODO: AUTH
 router.get('/:uid/orders', (req, res, next) => {
   Order.findAll({
-    where: { userId: req.params.uid},
-    include: {all: true}
+    where: { userId: req.params.uid },
+    include: { all: true }
   })
     .then(orders => res.json(orders))
     .catch(next)
