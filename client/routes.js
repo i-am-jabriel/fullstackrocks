@@ -10,6 +10,7 @@ import SingleProduct from './components/SingleProduct'
 import NavBar from './components/NavBar'
 import SingleUser from './components/SingleUser'
 import { fetchCurrentUser } from './store/currentUser'
+import CartView from './components/CartView'
 
 import { me } from './store'
 
@@ -30,22 +31,21 @@ class Routes extends Component {
           <Switch>
             {/* Routes placed here are available to all visitors */}
             <Route exact path="/" component={Home} />
-            <Route path="/login" component={Login} />
             <Route path="/signup" component={Signup} />
             <Route exact path="/products" component={AllProducts} />
             <Route path="/products/:prodId" component={SingleProduct} />
 
 
             {
-              (isLoggedIn || 1) &&
+              (isLoggedIn) &&
               <Switch>
                 {/* Routes placed here are only available after logging in */}
-                <Route path="/users" component={UserProfile} />
-                <Route path="/users/:userId" component={UserProfile} />
+                <Route exact path="/users" component={UserProfile} />
+                <Route exact path="/users/:userId" component={UserProfile} />
+                <Route path="/users/:userId/orders/active" component={CartView} />
               </Switch>
             }
             {/* Displays our Login component as a fallback */}
-            <Route component={Login} />
           </Switch>
         </Main>
       </Router>
