@@ -1,23 +1,49 @@
-// import React, {Component} from 'react'
-// import {fetchActiveUserOrder} from '../store/users'
+import React, {Component} from 'react'
+import {connect} from 'react-redux'
+import {Link} from 'react-router-dom'
+import {fetchActiveUserOrder} from '../store/activeOrder'
 
-// class Cart extends Component {
-//     componentDidMount() {
-//         this.props.loadUserOrder(this.props.match.params.userId)
-//     }
-// }
+class CartView extends Component {
+    componentDidMount() {
+        this.props.loadUserOrder(this.props.match.params.userId)
+    }
 
-// const mapState = (state) => {
-//     return {
+    render() {
+        const order = this.props.activeOrder
+        return (
+            <div>
+                <ul>
+                {order.length && order[0].products.map(product => (
+                    <li>
+                    <Link to={`/products/${product.id}`} key={product.id}>{product.title}
+                    <span>{product.image}</span>
+                    </Link>
+                    <span>{product.order_products.quantity}</span>
+                    <span>{product.showPrice}</span>
+                    </li>
 
-//     }
-// }
+                )
+                )}
+                </ul>
+            </div>
+        )
+    }
+}
 
-// const mapToDispatch = (dispatch) => {
-//     return {
-//         loadUserOrder: function(userId) {
-//             dispatch(fetchActiveUserOrder(userId))
-//         }
-//     }
-// }
+const mapState = (state) => {
+    return {
+        activeOrder: state.activeOrder
+    }
+}
 
+const mapDispatch = (dispatch) => {
+    return {
+        loadUserOrder: function(userId) {
+            dispatch(fetchActiveUserOrder(userId))
+        }
+    }
+}
+
+const CartContainer = connect(mapState, mapDispatch)(CartView)
+
+export default CartContainer
