@@ -33,8 +33,6 @@ class SingleProduct extends Component {
                     <div>
                         <h3>Product Reviews</h3>
                         <ProductReviews reviews={this.props.reviews} />
-                        <h5>User's Rating for Product(stars)</h5>
-                        <h6>User's feedback for product</h6>
                     </div>
                     <div>
                         <h3>Write a Review</h3>

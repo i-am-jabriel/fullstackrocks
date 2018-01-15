@@ -10,6 +10,10 @@ router.get('/',(req,res,next) => {
         .then(orders => res.json(orders))
         .catch(next);
 });
+
+
+
+
 /*router.param('userId', (req, res, next, userId) => {
     Purchase.findAll({
         include: [
@@ -56,5 +60,7 @@ router.get('/users/:userId', (req, res, next) => {
 router.get('/:orderId', (req, res, next) => {
     res.json(req.singleOrder)
 })*/
+
+
 
 module.exports = router
