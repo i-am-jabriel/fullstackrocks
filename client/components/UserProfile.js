@@ -107,9 +107,14 @@ function onPhoneChange(evt){
   if(field.value.length>12)field.value=field.value.substring(0,12);
 }
 export const UserProfile = (props) => {
-  console.log(document.getElementById('zip'));
-  const {email, user} = props
-
+  const {email, currentUser:user} = props
+  //I have to do the because default value likes to act funky
+  //When it re-renders it will not update defaultValue of an input
+  ;['name','street','city','state','zip','phone'].forEach(field=>{
+    let elem = $('#'+field)[0]
+    if(!elem)return
+    elem.value = user[field]
+  })
   return (
     <div id='user-profile-view'>
       <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
@@ -122,12 +127,12 @@ export const UserProfile = (props) => {
       >
         <h3>Profile Data</h3> <hr />
         <form id='user-input' onSubmit={atttemptSubmitUserData}>
-          <TextField hintText='Name'  id="name"/><br />
-          <TextField hintText='Street' id='street'/><br />
-          <TextField hintText='City' id='city'/><br />
-          <TextField hintText='State' id='state'/><br />
-          <TextField hintText='Zip' id='zip' onChange={onZipChange}/><br />
-          <TextField hintText='Phone Number' id='phone' onChange={onPhoneChange}/><br />
+          <TextField floatingLabelText='Name' floatingLabelFixed={true}  id="name" defaultValue={user.name}/><br />
+          <TextField floatingLabelText='Street'  floatingLabelFixed={true} id='street' defaultValue={user.street}/><br />
+          <TextField floatingLabelText='City'  floatingLabelFixed={true} id='city' defaultValue={user.city}/><br />
+          <TextField floatingLabelText='State'  floatingLabelFixed={true} id='state' defaultValue={user.state}/><br />
+          <TextField floatingLabelText='Zip' floatingLabelFixed={true} id='zip' onChange={onZipChange} defaultValue={user.zip}/><br />
+          <TextField floatingLabelText='Phone Number' floatingLabelFixed={true} id='phone' onChange={onPhoneChange} defaultValue={user.phone}/><br />
           <RaisedButton label="Submit" onClick={atttemptSubmitUserData} />
         </form>
       </Tab>
@@ -202,6 +207,7 @@ const mapState = (state) => {
   return {
     email: state.user?state.user.email:'',
     orders: state.orders || tempOrder,
+    currentUser : state.currentUser || {}
   }
 }
 
