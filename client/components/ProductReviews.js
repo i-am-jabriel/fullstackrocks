@@ -1,7 +1,7 @@
 import React from 'react'
 import Avatar from 'material-ui/Avatar'
 import ListItem from 'material-ui/List/ListItem'
-import { Rating } from 'material-ui-rating'
+//import { Rating } from 'material-ui-rating'
 
 
 export default function ProductReviews (props) {
@@ -20,13 +20,15 @@ export default function ProductReviews (props) {
                 <span>{review.user.name}</span>
                 </ListItem>
                 <b>{review.title}</b><br />
+                {/*
+                Disabled while we find a replacement that works on windows
                 <Rating
                   onRate={() => console.log('onRate')}
                   value={3}
                   max={5}
                   onChange={() => console.log('onChange')}
                   disabled
-                />
+                />*/}
             </div>
             <div>
                 <span>{review.description}</span>
