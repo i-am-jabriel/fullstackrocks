@@ -137,7 +137,7 @@ class AdminUser extends React.Component{
         switch(type){
             case 'products':
                 data[fieldName]=$('#edit-data-field')[0].value
-                if(fieldName==='price')data[fieldName]*=100
+                //if(fieldName==='price')data[fieldName]*=100
                 break
             case 'create category':
                 data['name']=$('#add-category-field')[0].value
@@ -145,7 +145,7 @@ class AdminUser extends React.Component{
             case 'create product':
                 productFieldNames.forEach(field=>{
                     data[field]=$('#create-product-input-'+field)[0].value
-                    if(field==='price')data[field]*=100
+                    //if(field==='price')data[field]*=100
                 })
                 break
         }
@@ -348,7 +348,7 @@ class AdminUser extends React.Component{
                                                 <span onClick={()=>this.showEditFieldWindow('products',product.id,'quantity',product.quantity,product)}>{product.quantity}</span>
                                             </TRC>
                                             <TRC className='clickable'>
-                                                <span onClick={()=>this.showEditFieldWindow('products',product.id,'price',product.price/100,product)}>${product.price / 100}</span>
+                                                <span onClick={()=>this.showEditFieldWindow('products',product.id,'price',product.showPrice,product)}>${product.showPrice}</span>
                                             </TRC>
                                             <TRC className='clickable'>
                                                 <span onClick={()=>this.showEditFieldWindow('products',product.id,'imageUrl',product.imageUrl,product)}>{concat(product.imageUrl)}</span>
