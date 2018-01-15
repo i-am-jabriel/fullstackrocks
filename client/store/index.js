@@ -7,7 +7,6 @@ import singleProduct from './singleProduct'
 import reviews from './productReviews'
 import categories from './categories'
 import currentUser from './currentUser'
-import user from './user'
 import activeOrder from './activeOrder'
 import orders from './orders'
 
