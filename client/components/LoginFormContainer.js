@@ -41,9 +41,7 @@ class LoginFormContainer extends Component {
     render() {
         return (
             <div>
-                <IconButton onClick={this.handleOpen} tooltip='Login'>
-                    <PersonOutline />
-                </IconButton>
+                <RaisedButton label='Login' onClick={this.handleOpen} />
                 <Dialog
                     title="Login"
                     modal={false}

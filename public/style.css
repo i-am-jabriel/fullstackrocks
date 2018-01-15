@@ -34,3 +34,11 @@ nav a {
   display: inline-flex;
   justify-content: flex-start;
 }
+
+.loginButtons{
+  display: inline-flex;
+}
+
+.navBarButtons{
+  display: inline-flex;
+}

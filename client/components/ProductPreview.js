@@ -20,6 +20,9 @@ const ProductPreview = (props) => (
         <NavLink to={`/products/${props.product.id}`}><img className='prodPreviewImg' src={props.product.imageUrl} alt="" /></NavLink>
         <CardText>
             {props.product.description}
+            <br />
+            <hr />
+            Price: ${props.product.showPrice}
         </CardText>
         <CardActions>
             <FlatButton label="Add To Cart" />

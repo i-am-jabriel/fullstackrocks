@@ -5,15 +5,30 @@ const Product = db.define('products', {
     title: {
         type: Sequelize.STRING,
         allowNull: false,
-        unique: true
+        unique: true,
+        validate: {
+            len: {
+                $gt: 0
+            }
+        }
     },
     description: {
         type: Sequelize.TEXT,
-        allowNull: false
+        allowNull: false,
+        validate: {
+            len: {
+                $gt: 0
+            }
+        }
     },
     price: {
         type: Sequelize.BIGINT,
-        allowNull: false
+        allowNull: false,
+        validate: {
+            len: {
+                $gt: 0
+            }
+        }
     },
     quantity: {
         type: Sequelize.INTEGER,
@@ -27,7 +42,30 @@ const Product = db.define('products', {
             isUrl: true
         }
     }
-})
+}, {
+        getterMethods: {
+            showPrice() {
+                let dollars = this.price / 100
+                let cents = this.price % 100
+                if (cents === 0) {
+                    cents = '00'
+                }
+                return dollars + '.' + cents
+            }
+        },
+        hooks: {
+            //convert given price to cents and store as INT
+            beforeCreate: (Product) => {
+                Product.price = Product.price * 100
+            }
+        }
+
+    })
+
+
+
+
+
 
 
 
