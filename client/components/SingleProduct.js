@@ -3,8 +3,9 @@ import {connect} from 'react-redux'
 import {NavLink} from 'react-router-dom'
 import {Card, CardTitle, CardText} from 'material-ui/Card'
 import DropDownMenu from 'material-ui/DropDownMenu'
-import {fetchSingleProduct, fetchProductReviews} from '../store/singleProduct'
-// import ProductReviews from './ProductReviews'
+import {fetchSingleProduct} from '../store/singleProduct'
+import {fetchProductReviews} from '../store/productReviews'
+import ProductReviews from './ProductReviews'
 
 /**
  * COMPONENT
@@ -12,12 +13,10 @@ import {fetchSingleProduct, fetchProductReviews} from '../store/singleProduct'
 class SingleProduct extends Component {
     componentDidMount() {
         this.props.loadOneProduct(this.props.match.params.prodId)
-        // this.props.loadReviews(this.props.match.params.prodId);
+        this.props.loadReviews(this.props.match.params.prodId);
     }
     render() {
         const product = this.props.oneProduct
-        // const reviews = this.props.loadReviews
-        // console.log("this is reviews: ", reviews)
         return (
             <Card>
                 <div>
@@ -33,7 +32,7 @@ class SingleProduct extends Component {
                     </button>
                     <div>
                         <h3>Product Reviews</h3>
-                        {/* <ProductReviews reviews={this.props.reviews} /> */}
+                        <ProductReviews reviews={this.props.reviews} />
                         <h5>User's Rating for Product(stars)</h5>
                         <h6>User's feedback for product</h6>
                     </div>
@@ -50,7 +49,7 @@ class SingleProduct extends Component {
 const mapState = (state) => {
     return {
         oneProduct: state.singleProduct,
-        // reviews: state.reviews
+        reviews: state.reviews
         // allUsers: state.allUsers ???
     }
 }
@@ -59,10 +58,10 @@ const mapDispatch = (dispatch) => {
     return {
         loadOneProduct: function(productId) {
             dispatch(fetchSingleProduct(productId))
+        },
+        loadReviews: function(productId) {
+            dispatch(fetchProductReviews(productId))
         }
-        // loadReviews: function(productId) {
-        //     dispatch(fetchProductReviews(productId))
-        // }
     }
 }
 
