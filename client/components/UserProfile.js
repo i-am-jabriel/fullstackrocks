@@ -47,6 +47,22 @@ form#user-input>div{
   padding:5px 25px;
   text-align:center;
 }
+#user-profile-view admin-view-container{
+  padding:30px;
+}
+.admin-table td.clickable{
+  cursor:pointer;
+  padding:0!important;
+}
+.admin-table td.clickable span{
+  padding:24px;
+}
+.admin-dialog .full-width-input{
+  width:100%!important;
+}
+.force-refresh{
+  display:none;
+}
 `
 let lastKeyCode;
 document.onkeydown = evt => lastKeyCode = evt.keyCode
