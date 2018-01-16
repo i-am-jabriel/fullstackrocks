@@ -14,8 +14,8 @@ class CartView extends Component {
             <div>
                 <ul>
                 {order.length && order[0].products.map(product => (
-                    <li>
-                    <Link to={`/products/${product.id}`} key={product.id}>{product.title}
+                    <li key={product.id}>
+                    <Link to={`/products/${product.id}`}>{product.title}
                     <span>{product.image}</span>
                     </Link>
                     <span>{product.order_products.quantity}</span>

@@ -79,7 +79,7 @@ router.get('/:userId/orders', (req, res, next) => {
   }
 });
 
-router.get('/:userId/orders/active', (req, res, next) => {
+router.get('/:userId/cart', (req, res, next) => {
   Order.findAll({
     where: { status: 'active' },
     include: { all: true }
