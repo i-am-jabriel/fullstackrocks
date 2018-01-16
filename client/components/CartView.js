@@ -15,11 +15,25 @@ class CartView extends Component {
                 <ul>
                 {order.length && order[0].products.map(product => (
                     <li key={product.id}>
-                    <Link to={`/products/${product.id}`}>{product.title}
-                    <span>{product.image}</span>
-                    </Link>
-                    <span>{product.order_products.quantity}</span>
-                    <span>{product.showPrice}</span>
+
+                        <div>
+                            <Link to={`/products/${product.id}`}>{product.title}</Link>
+                            <img src={product.imageUrl} />
+                        </div>
+
+                        <div>
+                            <button>
+                            <span>Quantity: {product.order_products.quantity}</span>
+                            </button>
+                        </div>
+
+                        <div>
+                            <span>{product.showPrice}</span>
+                        </div>
+
+                        <div>
+                            <button>Remove from Cart</button>
+                        </div>
                     </li>
 
                 )
