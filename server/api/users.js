@@ -30,7 +30,7 @@ router.get('/', (req, res, next) => {
     })
       .then(users => res.json(users))
       .catch(next)
-  }else{
+  } else {
     next()
   }
 })
@@ -38,7 +38,7 @@ router.get('/', (req, res, next) => {
 //Create a new user
 router.post('/', (req, res, next) => {
   //should creating a user be protected?
-  req.body.isAdmin=false
+  req.body.isAdmin = false
   //HOW DOES ONE CREATE AN ADMIN THO???
 
   User.create(req.body)
@@ -50,17 +50,17 @@ router.post('/', (req, res, next) => {
 router.get('/:userId', (req, res) => {
   if (req.user && (req.user.isAdmin || req.user.id === Number(req.params.userId))) {
     res.json(req.user)
-  }else next()
+  } else next()
 })
 //TODO: AUTH
 //Update a user by id
 router.put('/:userId', (req, res, next) => {
   if (req.user && (req.user.isAdmin || req.user.id === Number(req.params.userId))) {
     req.user.update(req.body, { returning: true })
-      .then(user=>{console.log('DING DING',user);return user})
+      .then(user => { console.log('DING DING', user); return user })
       .then(user => res.json(user))
       .catch(next)
-  }else next()
+  } else next()
 })
 //TODO: AUTH
 //delete a user by id
@@ -69,7 +69,7 @@ router.delete('/:userId', (req, res, next) => {
     req.user.destroy()
       .then(rows => res.send(rows))
       .catch(next)
-  }else next()
+  } else next()
 })
 
 //Get all orders for a user
@@ -82,14 +82,14 @@ router.get('/:userId/orders', (req, res, next) => {
     })
       .then(orders => res.json(orders))
       .catch(next)
-  }else next()
+  } else next()
 });
 
 router.get('/:userId/cart', (req, res, next) => {
   if (req.user && req.user.isAdmin || req.user.id === Number(req.params.userId)) {
     Order.findOne({
       where: { status: 'active', userId: req.user.id },
-      include: { all: true }
+      include: { all: true, nested: true }
     })
       .then(allCartItems => res.json(allCartItems))
       .catch(next)
@@ -98,31 +98,44 @@ router.get('/:userId/cart', (req, res, next) => {
 
 router.delete('/:userId/cart', (req, res, next) => {
   if (req.user && req.user.isAdmin || req.user.id === Number(req.params.userId)) {
-    Purchase.destroy({where: {
-      productId: req.body.prodId,
-      orderId: req.body.orderId
-    }})
-    .then(() => res.sendStatus(204))
-    .catch(next)
+    Purchase.destroy({
+      where: {
+        productId: req.body.prodId,
+        orderId: req.body.orderId
+      }
+    })
+      .then(() => res.sendStatus(204))
+      .catch(next)
   }
 })
 
-router.put('/:userId/cart', (req, res, next)=>{
+
+
+router.put('/:userId/cart', (req, res, next) => {
   if (req.user && req.user.isAdmin || req.user.id === Number(req.params.userId)) {
-    Purchase.update({quantity: req.body.quantity}, {
-      where:{
+    Purchase.update({ quantity: req.body.quantity }, {
+      where: {
         orderId: req.body.orderId,
-      productId: req.body.prodId
+        productId: req.body.prodId
       },
       returning: true
     })
-    .spread((numUpdated, updatedRowsArray)=>{
-      const updatedRow = updatedRowsArray[0]
-      res.json(updatedRow)
-    })
-    .catch(next)
+      .spread((numUpdated, updatedRowsArray) => {
+        const updatedRow = updatedRowsArray[0]
+        console.log(updatedRow)
+        return Order.findOne({
+          where: { status: 'active', userId: req.user.id },
+          include: { all: true }
+        })
+      })
+      .then(foundRow => res.json(foundRow))
+      .catch(next)
   }
 })
+
+
+
+
 
 
 module.exports = router
