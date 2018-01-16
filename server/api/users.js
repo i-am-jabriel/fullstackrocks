@@ -96,15 +96,6 @@ router.get('/:userId/cart', (req, res, next) => {
   }
 })
 
-router.put('/:userId/cart', (req, res, next) => {
-  if (req.user && req.user.isAdmin || req.user.id === Number(req.params.userId)) {
-    Order.create({status: 'active', userId: req.user.id})
-      .then(row => {
-        order_products.create({orderId: row.id, productId: req.body.productId, quantity: req.body.quantity, price: req.body.price})
-      })
-  }
-})
-
 router.delete('/:userId/cart', (req, res, next) => {
   if (req.user && req.user.isAdmin || req.user.id === Number(req.params.userId)) {
     Purchase.destroy({where: {
@@ -115,5 +106,23 @@ router.delete('/:userId/cart', (req, res, next) => {
     .catch(next)
   }
 })
+
+router.put('/:userId/cart', (req, res, next)=>{
+  if (req.user && req.user.isAdmin || req.user.id === Number(req.params.userId)) {
+    Purchase.update({quantity: req.body.quantity}, {
+      where:{
+        orderId: req.body.orderId,
+      productId: req.body.prodId
+      },
+      returning: true
+    })
+    .spread((numUpdated, updatedRowsArray)=>{
+      const updatedRow = updatedRowsArray[0]
+      res.json(updatedRow)
+    })
+    .catch(next)
+  }
+})
+
 
 module.exports = router
