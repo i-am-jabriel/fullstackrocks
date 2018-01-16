@@ -32,8 +32,9 @@ class Routes extends Component {
             {/* Routes placed here are available to all visitors */}
             <Route exact path="/" component={Home} />
             <Route path="/signup" component={Signup} />
-            <Route exact path="/products" component={AllProducts} />
             <Route path="/products/:prodId" component={SingleProduct} />
+            <Route path="/products" component={AllProducts} />
+            <Route path="/products?stuff" component={AllProducts} />
 
 
             {

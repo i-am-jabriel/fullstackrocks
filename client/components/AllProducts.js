@@ -6,9 +6,7 @@ import { GridList, GridTile } from 'material-ui/GridList'
 import IconButton from 'material-ui/IconButton'
 import Subheader from 'material-ui/Subheader'
 import StarBorder from 'material-ui/svg-icons/toggle/star-border'
-import Categories from './Categories'
-import categories from '../store/categories';
-import { fetchAllCategories } from '../store/categories'
+import CategoryDropDown from './Categories'
 
 const styles = {
   root: {
@@ -30,26 +28,17 @@ const styles = {
 class allProducts extends Component {
   constructor(props) {
     super(props)
-    this.state = {
-      categoryVal: 0
-    }
-    this.getCategoryValue = this.getCategoryValue.bind(this);
-  }
-
-  getCategoryValue(categoryVal) {
-    this.setState({ categoryVal })
   }
 
   componentDidMount() {
     this.props.loadProducts()
-    this.props.loadCategories()
   }
-
+  
   render() {
-    console.log(this.state.categoryVal)
+    console.log(this.props.allProducts)
     return (
       <div id="all-products" style={styles.root}>
-        <Categories categories={this.props.categories} categoryVal={this.state.categoryVal} getCategoryValue={this.getCategoryValue} />
+        <CategoryDropDown />
         <GridList cellHeight={180} style={styles.gridList}>
           <Subheader>Product List</Subheader>
           {this.props.allProducts.map((product) => (
@@ -59,7 +48,7 @@ class allProducts extends Component {
                 //subtitle={<span>by <b>{tile.author}</b></span>}
                 actionIcon={<IconButton><StarBorder color="white" /></IconButton>}
               >
-                <img src={product.imageUrl} />
+                <img src={product.imageUrl}/>
               </GridTile>
             </Link>
           ))}
@@ -69,20 +58,18 @@ class allProducts extends Component {
   }
 }
 
-function mapStateToProps(storeState) {
+function mapStateToProps(store) {
+  console.log(store)
   return {
-    allProducts: storeState.allProducts,
-    categories: storeState.categories
+    allProducts: store.allProducts,
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    loadCategories: () => {
-      dispatch(fetchAllCategories())
-    },
     loadProducts: function () {
-      dispatch(fetchProducts());
+      let query = this.location?this.location.search:undefined;
+      dispatch(fetchProducts(query))  
     }
   };
 }

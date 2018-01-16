@@ -12,9 +12,10 @@ const allProducts = (products) => {
 };
 
 //Thunk Action Creator
-export const fetchProducts = () => {
+export const fetchProducts = (query) => {
+    if(query===undefined)query=''
     return function(dispatch) {
-        axios.get('/api/products')
+        axios.get('/api/products'+query)
         .then(response => {dispatch(allProducts(response.data)); })
         .catch(console.error);
     }

@@ -33,6 +33,16 @@ router.param('categoryName', (req, res, next, name) => {
 
 //Get all products
 router.get('/', (req, res, next) => {
+    if(req.query.category){
+        return Product.findAll({
+            include: [{
+                model: Category,
+                where:{name: req.query.category}
+            }]
+        })
+            .then(products => res.json(products))
+            .catch(next)
+    }
     Product.findAll({include:[{model:Category}]})
         .then(products => res.json(products))
         .catch(next)

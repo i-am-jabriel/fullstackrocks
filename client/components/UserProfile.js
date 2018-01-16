@@ -188,15 +188,14 @@ export const UserProfile = (props) => {
               })}
             </tbody></table>
           </Tab>
-          {props.currentUser &&
-            //TODO: AUTH
-            props.currentUser.isAdmin}
+          {props.currentUser && props.currentUser.isAdmin && (
           <Tab
             icon={<FontIcon className="material-icons">supervisor_account</FontIcon>}
             label="Admin"
           >
             <AdminUser />
           </Tab>
+          )}
         </Tabs>
       </Paper>
 

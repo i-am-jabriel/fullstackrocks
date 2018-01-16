@@ -9,7 +9,7 @@ import RaisedButton from 'material-ui/RaisedButton';
 import Toggle from 'material-ui/Toggle';
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 import NavigationClose from 'material-ui/svg-icons/navigation/close';
-import { fetchAllCategories } from '../store/categories'
+import {fetchProducts} from '../store/allProducts';
 import CategoryDropDown from './Categories'
 import { NavLink } from 'react-router-dom'
 import SignUpFormContainer from './SignUpFormContainer'
@@ -51,7 +51,6 @@ class NavBar extends Component {
     handleChange = (event, logged) => {
         this.setState({ logged: logged });
     };
-
     render() {
         return (
             <div>
@@ -62,6 +61,7 @@ class NavBar extends Component {
                         <div className='navBarButtons'>
                             <NavLink to={`/`}><h1>FSAROCKS</h1></NavLink>
                             <NavLink to={'/products'}><RaisedButton label='Products' /></NavLink>
+                            <CategoryDropDown />
                         </div>
                         {
                             this.props.currentUser.id ? <Logged logoutuser={this.props.logoutUser} currentUser={this.props.currentUser} /> :
@@ -84,17 +84,17 @@ class NavBar extends Component {
 
 function mapStateToProps(storeState) {
     return {
-        currentUser: storeState.currentUser
+        currentUser: storeState.currentUser,
     }
 }
-function mapDispactToProps(dispatch, ownProps) {
+function mapDispatchToProps(dispatch, ownProps) {
     return {
         logoutUser: () => {
             dispatch(logout())
-        }
+        },
     }
 }
 
-const NavBarContainer = connect(mapStateToProps, mapDispactToProps)(NavBar)
+const NavBarContainer = connect(mapStateToProps, mapDispatchToProps)(NavBar)
 
 export default NavBarContainer
