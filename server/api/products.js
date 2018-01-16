@@ -1,5 +1,5 @@
 const router = require('express').Router()
-const { Product,Category, Review, User} = require('../db/models')
+const { Product, Category, Review, User} = require('../db/models')
 
 //If we going to look for a specific product from params preload that and have it available to the request
 router.param('prodId', (req, res, next, prodId) => {
@@ -58,6 +58,13 @@ router.get('/:prodId/reviews', (req, res, next) => {
     })
     .then(productReviews => res.json(productReviews))
     .catch(next)
+})
+
+// Create a Product Review
+router.post('/:prodId/review', (req, res, next) => {
+  Review.create(Object.assign({}, req.body, {productId: Number(req.params.prodId), userId: req.user.id}))
+  .then(productReviews => res.json(productReviews))
+  .catch(next)
 })
 
 
