@@ -87,8 +87,8 @@ router.get('/:userId/orders', (req, res, next) => {
 
 router.get('/:userId/cart', (req, res, next) => {
   if (req.user && req.user.isAdmin || req.user.id === Number(req.params.userId)) {
-    Order.findAll({
-      where: { status: 'active' },
+    Order.findOne({
+      where: { status: 'active', userId: req.user.id },
       include: { all: true }
     })
       .then(allCartItems => res.json(allCartItems))
@@ -102,6 +102,17 @@ router.put('/:userId/cart', (req, res, next) => {
       .then(row => {
         order_products.create({orderId: row.id, productId: req.body.productId, quantity: req.body.quantity, price: req.body.price})
       })
+  }
+})
+
+router.delete('/:userId/cart', (req, res, next) => {
+  if (req.user && req.user.isAdmin || req.user.id === Number(req.params.userId)) {
+    Purchase.destroy({where: {
+      productId: req.body.prodId,
+      orderId: req.body.orderId
+    }})
+    .then(() => res.sendStatus(204))
+    .catch(next)
   }
 })
 
