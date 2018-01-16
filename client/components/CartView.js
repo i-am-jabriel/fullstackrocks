@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
-import { fetchActiveUserOrder, removeCurrentItem, changeProductQuantity } from '../store/activeOrder'
+import { fetchActiveUserOrder, removeCurrentItem, changeProductQuantity, checkoutOrder } from '../store/activeOrder'
 
 class CartView extends Component {
     constructor(props) {
@@ -15,7 +15,6 @@ class CartView extends Component {
 
     render() {
         const order = this.props.activeOrder.products
-        console.log(order);
         return (
             <div>
                 <ul>
@@ -45,6 +44,7 @@ class CartView extends Component {
                     )
                     )}
                 </ul>
+                <button onClick={() => this.props.checkout(this.props.activeOrder.id)}>Checkout</button>
             </div>
         )
     }
@@ -56,7 +56,7 @@ const mapState = (state) => {
     }
 }
 
-const mapDispatch = (dispatch) => {
+const mapDispatch = (dispatch, ownProps) => {
     return {
         loadUserOrder: function (userId) {
             dispatch(fetchActiveUserOrder(userId))
@@ -72,6 +72,9 @@ const mapDispatch = (dispatch) => {
                 --quantity
                 dispatch(changeProductQuantity(quantity, orderId, prodId, userId))
             }
+        },
+        checkout: function (orderId) {
+            dispatch(checkoutOrder(orderId, ownProps.history))
         }
     }
 }
