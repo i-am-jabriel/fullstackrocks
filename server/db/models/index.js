@@ -22,12 +22,12 @@ const db = require('../db');
 //Purchase.belongsTo(Product)
 //Purchase.belongsTo(Order)
 
-Order.belongsToMany(Product,{through:'order_products'})
-Product.belongsToMany(Order,{through:'order_products'})
+Order.belongsToMany(Product, { through: 'order_products' })
+Product.belongsToMany(Order, { through: 'order_products' })
 Order.belongsTo(User)
 Review.belongsTo(User)
 Review.belongsTo(Product)
-Product.belongsToMany(Category,{through:'product_categories'})
+Product.belongsToMany(Category, { through: 'product_categories' })
 //const ProductCategories = db.define('product_categories',{})
 
 module.exports = {
