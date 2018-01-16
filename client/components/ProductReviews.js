@@ -7,9 +7,10 @@ import ListItem from 'material-ui/List/ListItem'
 export default function ProductReviews (props) {
 
   const reviews = props.reviews;
+  console.log(reviews)
 
   return (
-    <ul>
+    <ul style={{listStyle: 'none'}}>
       {
         reviews.length && reviews.map((review) => (
           <li key={review.id}>
@@ -19,7 +20,7 @@ export default function ProductReviews (props) {
                 leftAvatar={<Avatar>{review.user.name[0].toUpperCase()}</Avatar>}>
                 <span>{review.user.name}</span>
                 </ListItem>
-                <b>{review.title}</b><br />
+                <b>{review.title}</b><br /><br />
                 {/*
                 Disabled while we find a replacement that works on windows
                 <Rating
@@ -31,7 +32,7 @@ export default function ProductReviews (props) {
                 />*/}
             </div>
             <div>
-                <span>{review.description}</span>
+                <span>{review.description}</span><br />
             </div>
           </li>
         ))
