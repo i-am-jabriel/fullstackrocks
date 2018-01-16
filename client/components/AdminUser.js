@@ -17,6 +17,7 @@ import TextField from 'material-ui/TextField';
 import DropDownMenu from 'material-ui/DropDownMenu';
 import Chip from 'material-ui/Chip';    
 import MenuItem from 'material-ui/MenuItem';
+import Snackbar from 'material-ui/Snackbar';
 import {fetchProducts} from '../store/allProducts';
 import {fetchAllCategories} from '../store/categories';
 import {fetchAllOrders} from '../store/orders';
@@ -47,7 +48,9 @@ class AdminUser extends React.Component{
             createProductWindow:false,
             editCategoriesWindow:false,
             editFieldWindow:false,
+            showSnackBar:false,
             window:{},
+            users:[],
             refresh:0, //A variable to help force page refreshs
         }
 
@@ -78,10 +81,16 @@ class AdminUser extends React.Component{
             />,
         ]
     }
+    loadUsers(){
+        axios.get('/api/users/')
+            .then(res=>res.data)
+            .then(users=>this.setState({users}))
+    }
     componentDidMount(){
         this.props.loadProducts();
         this.props.loadCategories();
         this.props.loadOrders();
+        this.loadUsers();
     }
     showCreateProductWindow(){
         this.setState({
@@ -159,57 +168,115 @@ class AdminUser extends React.Component{
         })
         //Only send the data if the user submits it
         if(!save)return
+        this.setState({showSnackBar:true})
         switch(type){
             case 'products':
-                axios.put('api/'+type+'/'+id,data)
+                axios.put('/api/'+type+'/'+id,data)
                     .then(res=>res.data)
                     .then(res=>this.props.loadProducts())
                 break
             case 'create category':
-                axios.post('api/categories',data)
+                axios.post('/api/categories',data)
                     .then(res=>res.data)
                     .then(res=>this.props.loadCategories())
                 break
             case 'create product':
-                axios.post('api/products',data)
+                axios.post('/api/products',data)
                     .then(res=>res.data)
                     .then(res=>this.props.loadProducts())
                 break
         }
     }
-    removeCategoryFromProduct(removedCategory){
-        let value = this.state.window.value.filter(item=>item!==removedCategory)
-        let window = Object.assign({},this.state.window,{value})
-        this.setState(window)
-        axios.get('/api/products/'+window.id+'/removeCategory/'+removedCategory)
+    makeUserAdmin(id){
+        axios.put('/api/users/'+id,{isAdmin:true})
             .then(res=>res.data)
-            .then(res=>this.props.loadProducts())
-            .then(res=>this.setState({window,refresh:Math.random()}))
+            .then(data=>this.updateUserWithData(id,data))
+    }
+    forceUserPasswordReset(id){
+        axios.put('/api/users/'+id,{forcePasswordReset:true})
+            .then(res=>res.data)
+            .then(data=>this.updateUserWithData(id,data))
+    }
+    deleteUser(id){
+        axios.delete('/api/users/'+id)
+            .then(res=>res.data)
+            .then(data=>{
+                let users = this.state.users.slice(0).filter(user=>user.id!==id)
+                this.setState({users,showSnackBar:true})
+            })
+    }
+    toggleOrderDetails(toggledIndex) {
+        let listOfOrders = Array.from(document.getElementsByClassName('admin-order-details'))
+        listOfOrders.forEach((elem, i) => {
+          if (i === toggledIndex) return;
+          $(elem).removeClass('active')
+        })
+        $(listOfOrders[toggledIndex]).toggleClass('active')
+      }
+    updateUserWithData(id,data){
+        let users = this.state.users.slice(0);
+        users.forEach((user,i)=>{
+            if(user.id===id)users[i]=data
+        })
+        this.setState({users,showSnackBar:true})
+    }
+    updateProductWithData(id,data){
+        this.props.products.forEach((product,i)=>{
+            if(product.id===id)this.props.products[i]=data;
+        })
+    }
+    removeCategoryFromProduct(category){
+        let value = this.state.window.value.filter(item=>item!==category)
+        let window = Object.assign({},this.state.window,{value})
+        let data = {
+            category,
+            action:'remove'
+        }
+        axios.put('/api/products/'+window.id,data)
+            .then(res=>res.data)
+            .then(product=>{
+                this.updateProductWithData(id,product)
+                this.setState({window,refresh:Math.random()})
+            })
             .catch(console.error)
     }
     addCategoryToProduct(event, index, category){
         let value = this.state.window.value.slice(0)
         value.push(category)
         let window = Object.assign({},this.state.window,{value})
-        axios.get('/api/products/'+window.id+'/addCategory/'+category)
+        let data = {
+            category,
+            action:'add'
+        }
+        axios.put('/api/products/'+window.id,data)
             .then(res=>res.data)
-            .then(res=>this.props.loadProducts())
-            .then(res=>this.setState({window,refresh:Math.random()}))
+            .then(product=>{
+                this.updateProductWithData(window.id,product)
+                this.setState({window,refresh:Math.random()})
+            })
             .catch(console.error)
     }
     render(){
         let products = this.props.products || []
         let orders = this.props.orders || []
+        let users = this.state.users || []
         let allCategories = this.props.categories || []
         //If we're editing a products category dialog map what tags are available to be added
         let productCategories = [], remainingCategories = []
         if(this.state.window.type === 'edit categories'){
-            console.log('re-rendered');
             productCategories = this.state.window.value || [];
             remainingCategories = subtractArrays(getCategoryArrayFromProduct({categories:allCategories}),productCategories)
         }
         return (
             <div id='admin-view'>
+                {
+                //Snackbar
+                }
+                <Snackbar
+                    open={this.state.showSnackBar}
+                    message="Success!"
+                    autoHideDuration={2000}
+                />
                 {
                 //Dialogs
                 }
@@ -374,20 +441,20 @@ class AdminUser extends React.Component{
                                     <TableHeaderColumn>Total</TableHeaderColumn>
                                 </TableRow>
                             </TableHeader>
-                            <TableBody displayRowCheckbox={false} className='clickable' onCellClick={()=>this.toggleOrderDetails(order.id)}>
-                                {orders.map(order=>{
+                            <TableBody displayRowCheckbox={false} className='clickable'>
+                                {orders.map((order,i)=>{
                                     return [
                                         (<TableRow key={'single-order'+order.id}>
-                                            <TRC>{order.id}</TRC>
-                                            <TRC>{order.status}</TRC>
-                                            <TRC>{order.createdAt}</TRC>
-                                            <TRC>{order.shipDate ? order.shipDate : `Not Shipped Yet`}</TRC>
-                                            <TRC>${order.total/100}</TRC>
+                                            <TRC><span onClick={()=>{this.toggleOrderDetails(i)}}>{order.id}</span></TRC>
+                                            <TRC><span onClick={()=>{this.toggleOrderDetails(i)}}>{order.status}</span></TRC>
+                                            <TRC><span onClick={()=>{this.toggleOrderDetails(i)}}>{order.createdAt}</span></TRC>
+                                            <TRC><span onClick={()=>{this.toggleOrderDetails(i)}}>{order.shipDate ? order.shipDate : `Not Shipped Yet`}</span></TRC>
+                                            <TRC><span onClick={()=>{this.toggleOrderDetails(i)}}>${order.total/100}</span></TRC>
                                         </TableRow>
                                     ),(
                                         <TableRow key={'order-details'+order.id}>
                                             <TRC colSpan='5'>
-                                                <div className='order-details'><Table>
+                                                <div className='admin-order-details'><Table>
                                                     <TableHeader displaySelectAll={false}><TableRow>
                                                         <TableHeaderColumn>Item #</TableHeaderColumn>
                                                         <TableHeaderColumn>Item Name</TableHeaderColumn>
@@ -421,6 +488,29 @@ class AdminUser extends React.Component{
                     <Tab
                     icon={<FontIcon className="material-icons">perm_identity</FontIcon>}
                     label="User Management">
+                        <Table>
+                            <TableHeader displaySelectAll={false}>
+                                <TableRow>
+                                    <TableHeaderColumn>ID</TableHeaderColumn>
+                                    <TableHeaderColumn>Email</TableHeaderColumn>
+                                    <TableHeaderColumn>Make Admin</TableHeaderColumn>
+                                    <TableHeaderColumn>Force Password Reset</TableHeaderColumn>
+                                    <TableHeaderColumn>Delete User</TableHeaderColumn>
+                                </TableRow>
+                            </TableHeader>
+                            <TableBody displayRowCheckbox={false}>
+                                {users.map(user=>{
+                                    return (
+                                        <TableRow key={user.id+'user-view'}>
+                                            <TRC>{user.id}</TRC>
+                                            <TRC>{user.email}</TRC>
+                                            <TRC><RaisedButton label='Make Admin' onClick={()=>this.makeUserAdmin(user.id)}/></TRC>
+                                            <TRC><RaisedButton label='Force Password Reset' onClick={()=>this.forceUserPasswordReset(user.id)} /></TRC>
+                                            <TRC><RaisedButton label='Delete User' onClick={()=>this.deleteUser(user.id)} /></TRC>
+                                        </TableRow>
+                                )})}
+                            </TableBody>
+                        </Table>
                     </Tab>
                 </Tabs>
             </div>
@@ -430,12 +520,11 @@ class AdminUser extends React.Component{
 //let tempProducts = [{"id":1,"title":"Kevin Garnet","description":"Garnets ( /ˈɡɑːrnɪt/) are a group of silicate minerals that have been used since the Bronze Age as gemstones and abrasives.","price":1299,"quantity":10,"imageUrl":"https://static.wixstatic.com/media/6e7517_0b00d9af3f504048902e4077b12a9a0c~mv2_d_2250_3000_s_2.jpeg/v1/fill/w_1196,h_1196,q_85,usm_0.66_1.00_0.01/6e7517_0b00d9af3f504048902e4077b12a9a0c~mv2_d_2250_3000_s_2.jpeg","createdAt":"2018-01-13T19:26:09.525Z","updatedAt":"2018-01-13T19:26:09.525Z","categories":[{"id":1,"name":"Faceted","createdAt":"2018-01-13T19:26:09.523Z","updatedAt":"2018-01-13T19:26:09.523Z","product_catagories":{"createdAt":"2018-01-13T19:26:09.624Z","updatedAt":"2018-01-13T19:26:09.624Z","productId":1,"categoryId":1}},{"id":2,"name":"Rough","createdAt":"2018-01-13T19:26:09.524Z","updatedAt":"2018-01-13T19:26:09.524Z","product_catagories":{"createdAt":"2018-01-13T19:26:09.637Z","updatedAt":"2018-01-13T19:26:09.637Z","productId":1,"categoryId":2}},{"id":4,"name":"Mineral Specimen","createdAt":"2018-01-13T19:26:09.525Z","updatedAt":"2018-01-13T19:26:09.525Z","product_catagories":{"createdAt":"2018-01-13T19:26:09.640Z","updatedAt":"2018-01-13T19:26:09.640Z","productId":1,"categoryId":4}}]},{"id":2,"title":"Amethyst","description":"February Birthstone","price":1501,"quantity":14,"imageUrl":"https://upload.wikimedia.org/wikipedia/commons/thumb/e/e2/Amethyst._Magaliesburg%2C_South_Africa.jpg/1200px-Amethyst._Magaliesburg%2C_South_Africa.jpg","createdAt":"2018-01-13T19:26:09.526Z","updatedAt":"2018-01-13T19:26:09.526Z","categories":[{"id":2,"name":"Rough","createdAt":"2018-01-13T19:26:09.524Z","updatedAt":"2018-01-13T19:26:09.524Z","product_catagories":{"createdAt":"2018-01-13T19:26:09.629Z","updatedAt":"2018-01-13T19:26:09.629Z","productId":2,"categoryId":2}}]},{"id":4,"title":"Pink Star Diamond","description":"The most rare and expensive gem. 59 karats","price":83000000,"quantity":1,"imageUrl":"https://www.ritani.com/wp-content/uploads/2014/11/pink-star-diamond-nbc-news1.jpg","createdAt":"2018-01-13T19:26:09.526Z","updatedAt":"2018-01-13T19:26:09.526Z","categories":[{"id":4,"name":"Mineral Specimen","createdAt":"2018-01-13T19:26:09.525Z","updatedAt":"2018-01-13T19:26:09.525Z","product_catagories":{"createdAt":"2018-01-13T19:26:09.633Z","updatedAt":"2018-01-13T19:26:09.633Z","productId":4,"categoryId":4}}]},{"id":3,"title":"Aquamarine","description":"March Birthstone","price":3025,"quantity":9,"imageUrl":"https://kids.nationalgeographic.com/content/dam/kids/photos/articles/Science/A-G/aquamarine-raw.adapt.945.1.jpg","createdAt":"2018-01-13T19:26:09.526Z","updatedAt":"2018-01-13T19:26:09.526Z","categories":[{"id":3,"name":"Rocks","createdAt":"2018-01-13T19:26:09.525Z","updatedAt":"2018-01-13T19:26:09.525Z","product_catagories":{"createdAt":"2018-01-13T19:26:09.633Z","updatedAt":"2018-01-13T19:26:09.633Z","productId":3,"categoryId":3}},{"id":1,"name":"Faceted","createdAt":"2018-01-13T19:26:09.523Z","updatedAt":"2018-01-13T19:26:09.523Z","product_catagories":{"createdAt":"2018-01-13T19:26:09.644Z","updatedAt":"2018-01-13T19:26:09.644Z","productId":3,"categoryId":1}}]}];
 
 function mapStateToProps(store) {
-    let {categories, allProducts:products,orders} = store;
-    console.log(store);
+    let {categories, allProducts:products,orders,users} = store;
     return {
         categories,
         products,
-        orders
+        orders,
     }
 }
 function mapDispatchToProps(dispatch, ownProps) {
@@ -448,7 +537,7 @@ function mapDispatchToProps(dispatch, ownProps) {
         },
         loadOrders: () => {
             dispatch(fetchAllOrders())
-        }
+        },
     }
 }
 
