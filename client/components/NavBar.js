@@ -32,10 +32,10 @@ const Logged = (props) => (
         anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
     >
         <NavLink to={`/`}><MenuItem primaryText="Home" /></NavLink>
-        <MenuItem primaryText="Cart" />
+        <NavLink to={`/users/${props.currentUser.id}/cart`}><MenuItem primaryText="Cart" /></NavLink>
         <NavLink to={`/users/${props.currentUser.id}`}><MenuItem primaryText="Profile" /></NavLink>
         <MenuItem primaryText="Sign out" onClick={props.logoutuser} />
-    </IconMenu>
+    </IconMenu >
 );
 
 Logged.muiName = 'IconMenu';
