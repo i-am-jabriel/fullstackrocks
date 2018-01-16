@@ -86,12 +86,23 @@ router.get('/:userId/orders', (req, res, next) => {
 });
 
 router.get('/:userId/cart', (req, res, next) => {
-  Order.findAll({
-    where: { status: 'active' },
-    include: { all: true }
-  })
-    .then(allCartItems => res.json(allCartItems))
-    .catch(next)
+  if (req.user && req.user.isAdmin || req.user.id === Number(req.params.userId)) {
+    Order.findAll({
+      where: { status: 'active' },
+      include: { all: true }
+    })
+      .then(allCartItems => res.json(allCartItems))
+      .catch(next)
+  }
+})
+
+router.put('/:userId/cart', (req, res, next) => {
+  if (req.user && req.user.isAdmin || req.user.id === Number(req.params.userId)) {
+    Order.create({status: 'active', userId: req.user.id})
+      .then(row => {
+        order_products.create({orderId: row.id, productId: req.body.productId, quantity: req.body.quantity, price: req.body.price})
+      })
+  }
 })
 
 module.exports = router
