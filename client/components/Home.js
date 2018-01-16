@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import ProductPreview from './ProductPreview'
 import { fetchProducts } from '../store/allProducts'
+import { addProductToCart } from '../store/activeOrder'
 import Footer from './Footer'
 
 /**
@@ -28,7 +29,7 @@ class Home extends Component {
                 {
                     this.props.allProducts.slice(0, 3).map(product =>
                         (
-                            <ProductPreview key={product.id} product={product} />
+                            <ProductPreview key={product.id} product={product} currentUser={this.props.currentUser} addProductToCart={this.props.addProductToCart} />
                         ))
                 }
                 <Footer />
@@ -40,13 +41,17 @@ class Home extends Component {
 
 function mapStateToProps(storeState) {
     return {
-        allProducts: storeState.allProducts
+        allProducts: storeState.allProducts,
+        currentUser: storeState.currentUser
     }
 }
 function mapDispactToProps(dispatch, ownProps) {
     return {
         loadProducts: () => {
             dispatch(fetchProducts())
+        },
+        addProductToCart: (userId, prodId, price) => {
+            dispatch(addProductToCart(userId, prodId, price, ownProps.history))
         }
     }
 }

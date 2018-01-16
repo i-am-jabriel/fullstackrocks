@@ -3,9 +3,14 @@ import axios from 'axios';
 const GET_ACTIVE_ORDER = 'GET_ACTIVE_ORDER'
 const REMOVE_PRODUCT = 'REMOVE_PRODUCT'
 const CHANGE_PRODUCT_QUANTITY = 'CHANGE_PRODUCT_QUANTITY'
+const ADD_TO_CART = 'ADD_TO_CART';
 
 export const getActiveOrder = (activeOrder) => {
     return { type: GET_ACTIVE_ORDER, activeOrder }
+}
+
+export const addProdToCart = (product) => {
+    return { type: GET_ACTIVE_ORDER, product }
 }
 
 export const removeProduct = (productId) => {
@@ -20,6 +25,16 @@ export const fetchActiveUserOrder = (userId) => {
     return dispatch => {
         axios.get(`/api/users/${userId}/cart`)
             .then(res => dispatch(getActiveOrder(res.data)))
+    }
+}
+
+export const addProductToCart = (userId, productId, productPrice, history) => {
+    return dispatch => {
+        axios.post(`/api/users/${userId}/cart`, { productId, productPrice })
+            .then(res => {
+                dispatch(addProdToCart(res.data))
+            })
+            .catch(console.error)
     }
 }
 
@@ -44,6 +59,8 @@ export default (state = initialState, action) => {
     switch (action.type) {
         case GET_ACTIVE_ORDER:
             return action.activeOrder
+        case ADD_TO_CART:
+            return [...state, action.product]
         case REMOVE_PRODUCT:
             const deletedProduct = remove(state, action.productId)
             return Object.assign({}, state, {

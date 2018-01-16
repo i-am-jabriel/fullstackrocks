@@ -96,6 +96,29 @@ router.get('/:userId/cart', (req, res, next) => {
   }
 })
 
+router.post('/:userId/cart', (req, res, next) => {
+  if (req.user && req.user.isAdmin || req.user.id === Number(req.params.userId)) {
+    Order.findOrCreate({
+      where: {
+        userId: req.params.userId,
+        status: 'active'
+      }
+    })
+      .spread((order, wasCreated) => {
+        return Purchase.create({
+          quantity: 1,
+          orderId: Number(order.id),
+          productId: Number(req.body.productId),
+          price: Number(req.body.productPrice)
+        })
+      })
+      .then(createdRow => {
+        console.log(createdRow)
+      })
+      .catch(next)
+  }
+})
+
 router.delete('/:userId/cart', (req, res, next) => {
   if (req.user && req.user.isAdmin || req.user.id === Number(req.params.userId)) {
     Purchase.destroy({
@@ -122,7 +145,6 @@ router.put('/:userId/cart', (req, res, next) => {
     })
       .spread((numUpdated, updatedRowsArray) => {
         const updatedRow = updatedRowsArray[0]
-        console.log(updatedRow)
         return Order.findOne({
           where: { status: 'active', userId: req.user.id },
           include: { all: true }
