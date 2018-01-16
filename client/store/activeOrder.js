@@ -8,7 +8,7 @@ export const getActiveOrder = (activeOrder) => {
 
 export const fetchActiveUserOrder = (userId) => {
     return dispatch => {
-        axios.get(`/api/users/${userId}/orders/active`)
+        axios.get(`/api/users/${userId}/cart`)
         .then(res => res.data)
         .then(activeOrder => dispatch(getActiveOrder(activeOrder)))
     }
