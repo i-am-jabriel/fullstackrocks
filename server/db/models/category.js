@@ -11,5 +11,8 @@ const Category = db.define('categories', {
         }
     }
 });
+Category.findByName = name =>{
+    return Category.findOne({where:{name}})
+}
 
 module.exports = Category

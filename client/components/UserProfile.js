@@ -35,12 +35,16 @@ form#user-input>div{
 #user-profile-view .single-order{
   cursor:pointer;
 }
-#user-profile-view .order-details{
+#user-profile-view .order-details, .admin-order-details{
   transition: all 0.5s;
   max-height:0;
   overflow:hidden;
+  text-align:center;
 }
-#user-profile-view .order-details.active{
+table tr td{
+  text-align:center!important;
+}
+#user-profile-view .order-details.active, .admin-order-details.active{
   max-height:250px;
 }
 #user-profile-view th,#user-profile-view td{

@@ -63,7 +63,7 @@ router.get('/:prodId/reviews', (req, res, next) => {
 
 //Add or remove a category to a specific item
 //TODO: AUTH
-router.get('/:prodId/addCategory/:categoryName',(req,res,next) => {
+/*router.get('/:prodId/addCategory/:categoryName',(req,res,next) => {
     req.product.addCategory(req.category)
     .then(data => res.sendStatus(200))
     .catch(next)
@@ -73,10 +73,25 @@ router.get('/:prodId/removeCategory/:categoryName',(req,res,next) => {
     req.product.removeCategory(req.category)
         .then(data => res.sendStatus(200))
         .catch(next)
-})
+})*/
 
 //Edit a item by id
 router.put('/:prodId', (req, res, next) => {
+    if(req.body.category){
+        Category.findByName(req.body.category)
+            .then(category=>{
+                switch(req.body.action){
+                    case 'add':
+                        return req.product.addCategory()
+                            .then(product => res.json(product))
+                    case 'remove':
+                        return req.product.removeCategory(Category.findByName(req.body.category))
+                            .then(product => res.json(product))
+                    default:
+                        return res.sendStatus(400)
+                }
+            })
+    }
     req.product.update(req.body, { returning: true })
         .then(product => res.json(product))
         .catch(next)
