@@ -112,11 +112,9 @@ router.post('/:userId/cart', (req, res, next) => {
           price: Number(req.body.productPrice)
         })
       })
-      .then(createdRow => {
-        console.log(createdRow)
-      })
+      .then(createdRow => res.json(createdRow))
       .catch(next)
-    }
+  }
 })
 
 router.delete('/:userId/cart', (req, res, next) => {
