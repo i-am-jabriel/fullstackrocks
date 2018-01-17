@@ -24,7 +24,7 @@ class Home extends Component {
                 <h4>Your ONE STOP SHOP for ROCKS, MINERALS & EXPENSIVE JEWELRY</h4>
                 <p>You need some rocks? WE GOT DAT ROCKS</p>
                 <div className='homePageBanner'>
-                    <img className='bannerImage' src='Imgs/garnet_Sapphire.jpg' />
+                    <img className='bannerImage' src='Imgs/garnet_Sapphire.JPG' />
                 </div>
                 {
                     this.props.allProducts.slice(0, 3).map(product =>
