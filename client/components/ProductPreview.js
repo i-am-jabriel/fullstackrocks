@@ -26,7 +26,6 @@ const ProductPreview = (props) => (
         </CardText>
         <CardActions>
             <FlatButton label="Add To Cart" onClick={() => props.addProductToCart(props.currentUser.id, props.product.id, props.product.price)} />
-            <FlatButton label="Leave Review" />
         </CardActions>
     </Card>
 );
