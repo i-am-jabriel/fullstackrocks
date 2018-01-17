@@ -3,7 +3,8 @@ import axios from 'axios';
 const GET_ACTIVE_ORDER = 'GET_ACTIVE_ORDER'
 const REMOVE_PRODUCT = 'REMOVE_PRODUCT'
 const CHANGE_PRODUCT_QUANTITY = 'CHANGE_PRODUCT_QUANTITY'
-const ADD_TO_CART = 'ADD_TO_CART';
+const ADD_TO_CART = 'ADD_TO_CART'
+const CHECKOUT_ORDER = 'CHECKOUT_ORDER'
 
 export const getActiveOrder = (activeOrder) => {
     return { type: GET_ACTIVE_ORDER, activeOrder }
@@ -19,6 +20,10 @@ export const removeProduct = (productId) => {
 
 export const changeQuantity = (product) => {
     return { type: CHANGE_PRODUCT_QUANTITY, product }
+}
+
+export const checkOut = () => {
+    return { type: CHECKOUT_ORDER }
 }
 
 export const fetchActiveUserOrder = (userId) => {
@@ -53,6 +58,17 @@ export const removeCurrentItem = (prodId, orderId, userId) => {
     }
 }
 
+export const checkoutOrder = (orderId, history) => {
+    return dispatch => {
+        axios.put('/api/orders', { orderId })
+            .then(res => {
+                dispatch(checkOut())
+                history.push('/')
+            })
+            .catch(console.error)
+    }
+}
+
 const initialState = {}
 
 export default (state = initialState, action) => {
@@ -68,6 +84,8 @@ export default (state = initialState, action) => {
             })
         case CHANGE_PRODUCT_QUANTITY:
             return action.product
+        case CHECKOUT_ORDER:
+            return state
         default:
             return state
     }
