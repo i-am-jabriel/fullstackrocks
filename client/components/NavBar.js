@@ -14,6 +14,7 @@ import CategoryDropDown from './Categories'
 import { NavLink } from 'react-router-dom'
 import SignUpFormContainer from './SignUpFormContainer'
 import LoginFormContainer from './LoginFormContainer'
+import CartView from './CartView'
 import { logout } from '../store/currentUser'
 
 

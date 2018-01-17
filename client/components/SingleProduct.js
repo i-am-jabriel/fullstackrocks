@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { NavLink } from 'react-router-dom'
 import { Card, CardTitle, CardText } from 'material-ui/Card'
+import Paper from 'material-ui/Paper'
 import DropDownMenu from 'material-ui/DropDownMenu'
 import { fetchSingleProduct } from '../store/singleProduct'
 import { fetchProductReviews, postReview } from '../store/productReviews'
@@ -58,24 +59,24 @@ class SingleProduct extends Component {
             margin: 12,
         }
 
+
         return (
-            <Card>
                 <div>
-                    <img src={product.imageUrl} />
+                <Card>
+                    <img className='singleProdImage' src={product.imageUrl} />
                     <div style={{ margin: 40 }}>
-                        <CardTitle title={product.title} />
+                        <CardTitle title={product.title} subtitle={"In Stock: " + product.quantity}/>
                         <CardText>{product.description}</CardText>
-                        <h6>In Stock: {product.quantity}</h6>
-                        <button onClick={() => addProductToCart(this.props.currentUser.id, product.id, product.price)}>
-                            <h5>Add To Cart</h5>
-                        </button>
+
+                        <RaisedButton onClick={() => addProductToCart(this.props.currentUser.id, product.id, product.price)} label="Add to Cart" />
+
                     </div>
+                </Card>
 
                     <div style={{ margin: 40 }}>
-                        <h3>Product Reviews</h3>
+                        <h4>Product Reviews</h4>
                         <ProductReviews reviews={this.props.reviews} />
                     </div>
-
                     <div className="submit-product-review" style={{ margin: 40 }}>
                         <ValidatorForm className="form-horizontal" onSubmit={this.handleSubmit}>
                             <label htmlFor="reviewTitle">Write a review</label>
@@ -120,7 +121,7 @@ class SingleProduct extends Component {
                         </ValidatorForm>
                     </div>
                 </div>
-            </Card>
+
         )
     }
 }

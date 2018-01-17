@@ -50,7 +50,7 @@ router.post('/', (req, res, next) => {
 router.get('/:userId', (req, res) => {
   if (req.user && (req.user.isAdmin || req.user.id === Number(req.params.userId))) {
     res.json(req.user)
-  } else next()
+  }
 })
 //TODO: AUTH
 //Update a user by id
@@ -116,7 +116,7 @@ router.post('/:userId/cart', (req, res, next) => {
         console.log(createdRow)
       })
       .catch(next)
-  }
+    }
 })
 
 router.delete('/:userId/cart', (req, res, next) => {
