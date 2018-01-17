@@ -9,7 +9,7 @@ import RaisedButton from 'material-ui/RaisedButton';
 import Toggle from 'material-ui/Toggle';
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 import NavigationClose from 'material-ui/svg-icons/navigation/close';
-import {fetchProducts} from '../store/allProducts';
+import { fetchProducts } from '../store/allProducts';
 import CategoryDropDown from './Categories'
 import { NavLink } from 'react-router-dom'
 import SignUpFormContainer from './SignUpFormContainer'
@@ -21,6 +21,8 @@ import { logout } from '../store/currentUser'
 /**
  * COMPONENT
  */
+
+
 
 const Logged = (props) => (
     <IconMenu
@@ -35,7 +37,7 @@ const Logged = (props) => (
         <NavLink to={`/users/${props.currentUser.id}/cart`}><MenuItem primaryText="Cart" /></NavLink>
         <NavLink to={`/users/${props.currentUser.id}`}><MenuItem primaryText="Profile" /></NavLink>
         <MenuItem primaryText="Sign out" onClick={props.logoutuser} />
-    </IconMenu >
+    </IconMenu>
 );
 
 Logged.muiName = 'IconMenu';
@@ -56,12 +58,15 @@ class NavBar extends Component {
             <div>
                 <AppBar
                     showMenuIconButton={false}
+                    style={{ margin: 'auto', color: 'white' }}
+                    title='FSAROCKS'
+
                 >
                     <div className='appBar'>
                         <div className='navBarButtons'>
-                            <NavLink to={`/`}><h1>FSAROCKS</h1></NavLink>
-                            <NavLink to={'/products'}><RaisedButton label='Products' /></NavLink>
                             <CategoryDropDown />
+                            <NavLink to={'/'}><RaisedButton label='Home' /></NavLink>
+                            <NavLink to={'/products'}><RaisedButton label='Products' /></NavLink>
                         </div>
                         {
                             this.props.currentUser.id ? <Logged logoutuser={this.props.logoutUser} currentUser={this.props.currentUser} /> :

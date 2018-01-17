@@ -31,14 +31,18 @@ nav a {
 }
 
 .appBar{
-  display: inline-flex;
-  justify-content: flex-start;
+  display: flex;
+  
 }
 
 .loginButtons{
-  display: inline-flex;
+  display: flex;
 }
 
 .navBarButtons{
-  display: inline-flex;
+  display: flex;
+}
+
+.active{
+  text-decoration: underline;
 }
