@@ -32,7 +32,7 @@ nav a {
 
 .appBar{
   display: flex;
-  
+
 }
 
 .loginButtons{
@@ -45,4 +45,9 @@ nav a {
 
 .active{
   text-decoration: underline;
+}
+
+.singleProdImage{
+  margin: 10px;
+  height: 50vw;
 }

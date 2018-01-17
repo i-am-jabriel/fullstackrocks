@@ -57,6 +57,7 @@ router.post('/', (req, res, next) => {
 
 //Get a specific item by id
 router.get('/:prodId', (req, res, next) => {
+    console.log("this is req.sesh: ", req.session.id)
     res.json(req.product)
 })
 
